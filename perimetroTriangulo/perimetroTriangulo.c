@@ -11,45 +11,45 @@ as coordenadas de 2 pontos (ou seja, 4 valores) e retorne a distância entre ele
 #include<math.h>
 
 // function prototypes
-int distancia(int x1, int y1, int x2, int y2);
+int distancia(float x1, float y1, float x2, float y2);
 //main function
 int main(void) {
 //variables
-int xA;
-int yA;
-int xB;
-int yB;
-int xC;
-int yC;
-int perimetro;
+float xA;
+float yA;
+float xB;
+float yB;
+float xC;
+float yC;
+float perimetro;
 //execution
 printf("coordenada A: \n");
 printf("Entre com o xA: ");
-scanf("%d", &xA);
+scanf("%f", &xA);
 printf("Entre com o yA: ");
-scanf("%d", &yA);
+scanf("%f", &yA);
 
 printf("coordenada B: \n");
 printf("Entre com o xB: ");
-scanf("%d", &xB);
+scanf("%f", &xB);
 printf("Entre com o yB: ");
-scanf("%d", &yB);
+scanf("%f", &yB);
 
 printf("coordenada C: \n");
 printf("Entre com o xC: ");
-scanf("%d", &xC);
+scanf("%f", &xC);
 printf("Entre com o yC: ");
-scanf("%d", &yC);
+scanf("%f", &yC);
 
 
 
 perimetro = distancia(xA, yA, xB, yB) + distancia(xB, yB, xC, yC) + distancia(xC, yC, xA, yA);
-printf("O perimetro do triangulo vale %d\n",perimetro);
+printf("O perimetro do triangulo vale %f\n",perimetro);
 return 0;
 }
 
-int distancia(int x1, int y1,int x2,int y2){
+int distancia(float x1, float y1,float x2,float y2){
     int result;
-    result = ((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2));
+    result = sqrtf(((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)));
 return result;
 }
