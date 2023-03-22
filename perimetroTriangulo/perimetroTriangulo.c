@@ -11,7 +11,8 @@ as coordenadas de 2 pontos (ou seja, 4 valores) e retorne a distância entre ele
 #include<math.h>
 
 // function prototypes
-int distancia(float x1, float y1, float x2, float y2);
+double distancia(float x1, float y1, float x2, float y2);
+
 //main function
 int main(void) {
 //variables
@@ -48,8 +49,10 @@ printf("O perimetro do triangulo vale %f\n",perimetro);
 return 0;
 }
 
-int distancia(float x1, float y1,float x2,float y2){
-    int result;
-    result = sqrtf(((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)));
-return result;
+double distancia(float x1, float y1,float x2,float y2){
+    double result;
+    double conta;
+    conta = (x1 - x2) * (x1 - x2) + ((y1 - y2) * (y1 - y2));
+    result = sqrt(conta);
+return result ;
 }
