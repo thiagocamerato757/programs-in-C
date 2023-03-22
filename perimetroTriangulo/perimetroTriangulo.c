@@ -8,6 +8,7 @@ as coordenadas de 2 pontos (ou seja, 4 valores) e retorne a distância entre ele
 
 //libraries
 #include<stdio.h>
+#include<math.h>
 
 // function prototypes
 int distancia(int x1, int y1, int x2, int y2);
@@ -48,5 +49,7 @@ return 0;
 }
 
 int distancia(int x1, int y1,int x2,int y2){
-return sqrt(((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)));
+    int result;
+    result = ((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2));
+return result;
 }
