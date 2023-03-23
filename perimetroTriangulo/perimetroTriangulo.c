@@ -48,7 +48,7 @@ perimetro = distancia(xA, yA, xB, yB) + distancia(xB, yB, xC, yC) + distancia(xC
 printf("O perimetro do triangulo vale %.2f\n",perimetro);
 return 0;
 }
-// function to calculate the distance in between a particule
+// function to calculate the distance in between two particules
 double distancia(double x1, double y1, double x2, double y2){
     double result;
     double conta;
