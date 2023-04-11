@@ -1,4 +1,3 @@
-//2212580 - Thiago Pereira Camerato 33B
 
 //includes 
 #include<stdio.h>
