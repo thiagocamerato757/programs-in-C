@@ -1,6 +1,4 @@
 
-//2212580 - Thiago Pereira Camerato 33B
-
 //functions prototypes
 int ** criaMatriz(int a, int b);
 void imprimeMatriz2D(int ** c,int a ,int b);
