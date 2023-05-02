@@ -42,7 +42,10 @@ int productVencido = 0;
 int productConfere;
 int multa;
 
+<<<<<<< HEAD
 //execution
+=======
+>>>>>>> adbe22b30b16194b5289695c862ba2768ae4a20d
 printf("digite a data de visita [ex : dd/mm/yyyy ]!\n");
 scanf("%d / %d / %d",&diaA,&mesA,&anoA);
 
