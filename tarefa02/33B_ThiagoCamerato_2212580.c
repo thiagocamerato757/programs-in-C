@@ -44,12 +44,12 @@ int main(void)
 
             tamanhoSentenca = mystrlen(sentenca) - 1;
             *(sentenca + (mystrlen(sentenca) + 1)) = '\0';
-            // printf("sentenca normal : %s", sentenca);
+            //printf("sentenca normal : %s\n", sentenca);
             fwrite(&tamanhoSentenca, sizeof(int), 1, arquivoOUT);
-            // printf("tamanho sentenca : %d\n", tamanhoSentenca);
+            //printf("tamanho sentenca : %d\n", tamanhoSentenca);
             criptografaEdecifra(sentenca, chave);
             fwrite(sentenca, sizeof(char), tamanhoSentenca + 2, arquivoOUT);
-            // printf("sentenca criptografada : %s\n", sentenca);
+            //printf("sentenca criptografada : %s\n", sentenca);
             printf("%s", sentenca);
         }
     }
@@ -64,12 +64,12 @@ int main(void)
     {
         //printf("tamanho Sentenca : %d\n", tamanhoSentenca);
         fread(sentenca, sizeof(char), tamanhoSentenca + 2, arquivoIN);
-       //printf("Sentenca: %s\n", sentenca);
+        //printf("Sentenca: %s\n", sentenca);
         criptografaEdecifra(sentenca, (chave) * -1);
         mystrcpy(texto + mystrlen(texto), sentenca);
-        // printf("texto: %s\n",texto);
+        //printf("texto: %s\n",texto);
         mystrcpy(texto + (mystrlen(texto) - 1), ". ");
-        // printf("texto decifrado : %s\n",texto);
+        //printf("texto decifrado : %s\n",texto);
     }
     printf("%s\n\n",texto);
     fclose(arquivoIN);
@@ -117,43 +117,29 @@ void mystrcpy(char *d, char *o)
 // function that uses a key to encrypt or decrypt a string
 void criptografaEdecifra(char *a, int b)
 {
-
-    if (b > 0)
-    { // encrypt a string
-
-        if (*a == '\0')
-        {
-            return;
-        }
-        else if (*a >= 'A' && *a <= 'Z')
-        { // upper case
+    if (b > 0 && *a){ // encrypt a string
+        if (*a >= 'A' && *a <= 'Z'){ // upper case
             *a = (((*a - 'A') + b) % 26) + 'A';
         }
 
-        else if (*a >= (int)'a' && *a <= (int)'z')
-        { // upper case
+        else if (*a >= 'a' && *a <='z'){ // upper case
             *a = (((*a - 'a') + b) % 26) + 'a';
 
         } // recursive call to next char
         criptografaEdecifra(a + 1, b);
     }
-    else
-    { // decrypt a encrypted string
+    else if (b < 0 && *a){ // decrypt a encrypted string
 
-        if (*a == '\0')
-        {
-            return;
-        }
-        else if (*a >= 'A' && *a <= 'Z')
-        { // upper case
+        if (*a >= 'A' && *a <= 'Z'){ // upper case
+
             *a = (((*a - 'A') + b + 26) % 26) + 'A';
         }
 
-        else if (*a >= 'a' && *a <= 'z')
-        { // upper case
+        else if (*a >= 'a' && *a <= 'z'){ // upper case
             *a = (((*a - 'a') + b + 26) % 26) + 'a';
         }
         // recursive call to next char
+        
         criptografaEdecifra(a + 1, b);
     }
 }
