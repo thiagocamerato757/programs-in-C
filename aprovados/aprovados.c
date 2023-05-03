@@ -58,7 +58,7 @@ int main (void){
         printf("Nenhum aluno foi aprovado ! \n");
     }
 
-    printV(alunosP,nAlunos);
+    printV(alunosP,qtdAprovados);
 
     free(matricula);
     free(notas);
@@ -96,8 +96,9 @@ int * criaAprovados(int * a , float * b , int c , int * d){
         if(b[k] >= 5.0){
             *d += 1;
         }
-       
-
+        else {
+            a[k] = 0;
+        }
     }
 
     if (*d == 0) { //no student is aproved 
@@ -106,13 +107,13 @@ int * criaAprovados(int * a , float * b , int c , int * d){
 
     aprovados = (int*)malloc(*d * sizeof(int));
     if(aprovados == NULL){
-        fprintf(stderr,"erro ao alocar memória ! \n");
+        fprintf(stderr,"“Nao foi possivel alocar espaco !\n");
         exit(-9);
     }
 
     int j = 0;
     for (int s = 0 ; s < c ; s++){
-         if(b[s] >= 5.0){
+         if(b[s] >= 5.0 && a[s] != 0){
             aprovados[j] = a[s];
             j++;
         }
