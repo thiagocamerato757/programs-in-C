@@ -38,7 +38,7 @@ int main (void){
     printf("Digite a quantidade de alunos \n");
     scanf("%d",&nAlunos);
 
-    //
+    //Dynamically allocate memory 
     matricula = (int *)malloc(nAlunos*sizeof(int));
     if (matricula == NULL){
         fprintf(stderr,"Erro ao alocar a memória !\n");
@@ -60,6 +60,7 @@ int main (void){
 
     printV(alunosP,qtdAprovados);
 
+    //Deallocate memory
     free(matricula);
     free(notas);
     free(alunosP);
