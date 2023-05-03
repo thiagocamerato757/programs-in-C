@@ -7,7 +7,7 @@ Não coloque as duas funções no mesmo arquivo. Crie um arquivo com os protóti
 */
 
 
-//libraries
+//includes
 #include<stdio.h>
 #include<math.h>
 

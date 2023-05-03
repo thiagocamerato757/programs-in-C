@@ -6,11 +6,11 @@ as coordenadas de 2 pontos (ou seja, 4 valores) e retorne a distância entre ele
 }
 */
 
-//libraries
+//includes
 #include<stdio.h>
 #include<math.h>
 
-// function prototypes
+//function prototypes
 double distancia(double x1, double y1, double x2, double y2);
 
 //main function
@@ -48,7 +48,7 @@ perimetro = distancia(xA, yA, xB, yB) + distancia(xB, yB, xC, yC) + distancia(xC
 printf("O perimetro do triangulo vale %.2f\n",perimetro);
 return 0;
 }
-// function to calculate the distance in between two particules
+//function to calculate the distance in between two particules
 double distancia(double x1, double y1, double x2, double y2){
     double result;
     double conta;

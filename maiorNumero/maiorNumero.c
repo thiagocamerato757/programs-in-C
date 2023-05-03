@@ -52,7 +52,7 @@ scanf("%d", &n3);
 aux = maior(n1, n2);
 printf("O maior numero lido vale %d\n", maior(aux, n3));
 printf("O valor medio lido vale %d\n", media(n1, n2, n3));
-// A partir daqui não é mais para os fracos
+
 nPares = par(n1) + par(n2) + par(n3);
 printf("A quantidade de numeros pares lida vale %d\n", nPares);
 return 0;
