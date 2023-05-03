@@ -57,9 +57,9 @@ int main (void){
     if(alunosP == NULL){
         printf("Nenhum aluno foi aprovado ! \n");
     }
-
-    printV(alunosP,qtdAprovados);
-
+    else{
+        printV(alunosP,qtdAprovados);
+    }
     //Deallocate memory
     free(matricula);
     free(notas);
