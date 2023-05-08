@@ -4,7 +4,6 @@ e retorne o número de elementos do vetor que é maior que x.
 
 //includes
 #include<stdio.h>
-#include<string.h>
 
 //function prototypes 
 int maiorQueX (int n, int *v, int x);
