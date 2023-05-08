@@ -120,11 +120,9 @@ void criptografaEdecifra(char *a, int b)
     if (b > 0 && *a){ // encrypt a string
         if (*a >= 'A' && *a <= 'Z'){ // upper case
             *a = (((*a - 'A') + b) % 26) + 'A';
-        }
-
+        }   
         else if (*a >= 'a' && *a <='z'){ // upper case
-            *a = (((*a - 'a') + b) % 26) + 'a';
-
+            *a = (((*a - 'a') + b) % 26) + 'a'; 
         } // recursive call to next char
         criptografaEdecifra(a + 1, b);
     }
