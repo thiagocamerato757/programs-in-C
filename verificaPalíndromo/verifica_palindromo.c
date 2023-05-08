@@ -25,10 +25,10 @@ int main(void){
     tamanho = strlen(palavra);
     verificaPalindromo = palindromo(palavra,tamanho);
     if(verificaPalindromo == 1){
-        printf("A palavra é um palíndromo ! \n");
+        printf("A string é um palíndromo ! \n");
     }
     else{
-        printf("A palavra não é um palíndromo ! \n");
+        printf("A string não é um palíndromo ! \n");
     }
     
     return 0;
