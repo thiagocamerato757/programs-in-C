@@ -14,7 +14,7 @@ int main(void){
     long long int result;
 
     //execution
-    printf("Digite dois números pra usarmos na fórmula de Ackermann \n");
+    printf("Digite dois números pra usarmos na funçãoa de Ackermann \n");
     printf("primeiro número:");
     scanf("%lld",&m);  
     printf("segundo número:");
