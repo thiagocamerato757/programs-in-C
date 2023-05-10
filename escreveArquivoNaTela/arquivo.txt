@@ -1,0 +1,10 @@
+Bem-vindo ao arquivo de texto!
+Este é um exemplo de como você pode escrever várias linhas em um arquivo de texto.
+Você pode usá-lo para armazenar informações importantes ou simplesmente fazer anotações.
+A formatação é flexível, você pode adicionar títulos, listas ou parágrafos.
+Lembre-se de salvar o arquivo com uma extensão adequada, como .txt.
+Você também pode organizar as informações em seções para facilitar a leitura e a compreensão.
+Use espaços em branco para separar as linhas e tornar o arquivo mais legível.
+Certifique-se de revisar o arquivo antes de compartilhá-lo ou utilizá-lo para outros fins.
+Não se esqueça de fazer backup regularmente dos seus arquivos para evitar a perda de dados.
+Divirta-se experimentando e explorando as possibilidades de um arquivo de texto!
