@@ -26,6 +26,8 @@ int main(void){
     printf("%s :",nomePessoa);
     criaNomeBin(nomePessoa);
     arqBin = abrearq(nomePessoa,"wb");
+
+    //reading from text file and writing data to binary file
     while(!feof(arqTxt)){
 
         for(int i = 0; i < TAMANHO_LIST ; i++){
@@ -34,7 +36,7 @@ int main(void){
       
         fwrite(list,sizeof(int),TAMANHO_LIST,arqBin);
     }
-
+    //show data 
     for(int i = 0; i < TAMANHO_LIST ; i++){
         printf(" %d ",list[i]);
     }
@@ -46,6 +48,7 @@ int main(void){
 
     arqBin = abrearq(nomePessoa,"rb");
 
+    //reading from binary 
     while(fread(list,sizeof(int),TAMANHO_LIST,arqBin)){
         max = achaMax(list,TAMANHO_LIST);
         printf("MAX = %d\n",max);
@@ -66,6 +69,7 @@ FILE * abrearq(char *file,char*mode){
     return a;
 }
 
+//function to change the name of the operator and use it to define a binary file's name
 void criaNomeBin(char * str){
    
     for(int i = 0; i < strlen(str); i++){
@@ -77,6 +81,7 @@ void criaNomeBin(char * str){
     strcat(str,".dat");
 }
 
+// function to search the greater value in a integer array 
 int achaMax(int *a, int tamanho){
     int maior = 0;
     for(int i = 0; i < tamanho ; i++){
