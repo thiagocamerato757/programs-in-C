@@ -42,11 +42,14 @@ int palindromo(char *str, int len) {
     else {
         if (str[0] == ' ') {
             return palindromo(str + 1, len - 1);
-        } else if (str[len - 1] == ' ') {
+        } 
+        else if (str[len - 1] == ' ') {
             return palindromo(str, len - 1);
-        } else if (str[0] == str[len - 1]) {
+        } 
+        else if (str[0] == str[len - 1]) {
             return palindromo(str + 1, len - 2);
-        } else {
+        } 
+        else {
             return 0;
         }
     }
