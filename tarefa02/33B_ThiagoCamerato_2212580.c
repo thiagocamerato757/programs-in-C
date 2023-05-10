@@ -13,8 +13,7 @@ void criptografaEdecifra(char *a, int b);
 #define MAX_TEXTO 10000
 
 //main function 
-int main(void)
-{
+int main(void){
     // variables
     FILE *arquivoIN;
     FILE *arquivoOUT;
@@ -27,8 +26,7 @@ int main(void)
     arquivoIN = abrearq("texto.txt", "r");
     arquivoOUT = abrearq("arquivoBinario.bin", "wb");
 
-    if (arquivoIN == NULL || arquivoOUT == NULL)
-    {
+    if (arquivoIN == NULL || arquivoOUT == NULL){
         fprintf(stderr, "saindo do programa !\n");
         exit(-2);
     }
@@ -37,10 +35,8 @@ int main(void)
     scanf("%d", &chave);
     // 1) encrypt a sentense and writes it to a Binary file 
     printf("TEXTO CRIPTOGRAFADO:\n\n");
-    while (!feof(arquivoIN))
-    {
-        if (fgets(sentenca, MAX_SENTENCA, arquivoIN) != NULL)
-        {
+    while (!feof(arquivoIN)){
+        if (fgets(sentenca, MAX_SENTENCA, arquivoIN) != NULL){
 
             tamanhoSentenca = mystrlen(sentenca) - 1;
             *(sentenca + (mystrlen(sentenca) + 1)) = '\0';
@@ -60,8 +56,7 @@ int main(void)
     arquivoIN = abrearq("arquivoBinario.bin", "rb");
     //2) reads encrypted message from Binary file and decrypt it then show it to the terminal 
     printf("\nTEXTO DECIFRADO:\n\n");
-    while (fread(&tamanhoSentenca, sizeof(int), 1, arquivoIN) == 1)
-    {
+    while (fread(&tamanhoSentenca, sizeof(int), 1, arquivoIN) == 1){
         //printf("tamanho Sentenca : %d\n", tamanhoSentenca);
         fread(sentenca, sizeof(char), tamanhoSentenca + 2, arquivoIN);
         //printf("Sentenca: %s\n", sentenca);
@@ -77,8 +72,7 @@ int main(void)
     return 0;
 }
 // function to open a file
-FILE *abrearq(char *str, char *mode)
-{
+FILE *abrearq(char *str, char *mode){
     FILE *arq = fopen(str, mode);
     if (arq == NULL)
     {
@@ -88,13 +82,11 @@ FILE *abrearq(char *str, char *mode)
     return arq;
 }
 // function to calculate and return the size of a string
-int mystrlen(char *a)
-{
+int mystrlen(char *a){
 
     int contador = 0;
 
-    while (*a)
-    {
+    while (*a){
         contador++;
         a++;
     }
@@ -102,11 +94,9 @@ int mystrlen(char *a)
 }
 
 // function that copies each char of a string o into a new string
-void mystrcpy(char *d, char *o)
-{
+void mystrcpy(char *d, char *o){
 
-    while (*o != '\0')
-    {
+    while (*o != '\0'){
         *d = *o;
         d++;
         o++;
@@ -115,8 +105,7 @@ void mystrcpy(char *d, char *o)
 }
 
 // function that uses a key to encrypt or decrypt a string
-void criptografaEdecifra(char *a, int b)
-{
+void criptografaEdecifra(char *a, int b){
     if (b > 0 && *a){ // encrypt a string
         if (*a >= 'A' && *a <= 'Z'){ // upper case
             *a = (((*a - 'A') + b) % 26) + 'A';
