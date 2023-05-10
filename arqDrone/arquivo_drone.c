@@ -1,0 +1,89 @@
+//includes
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+//creating simbolic variables
+#define TAMANHO_LIST 9
+
+//function prototypes 
+FILE * abrearq(char *file,char*mode);
+void criaNomeBin(char * str);
+int achaMax(int *a, int tamanho);
+
+//main function
+int main(void){
+    //variables
+    FILE *arqTxt;
+    FILE *arqBin;
+    char nomePessoa[100] = "";
+    int list[TAMANHO_LIST];
+    int max = 0;
+
+    //execution 
+    arqTxt = abrearq("dadosDrone2.txt","r");
+    fscanf(arqTxt,"%[^:]:",nomePessoa);
+    printf("%s :",nomePessoa);
+    criaNomeBin(nomePessoa);
+    arqBin = abrearq(nomePessoa,"wb");
+    while(!feof(arqTxt)){
+
+        for(int i = 0; i < TAMANHO_LIST ; i++){
+            fscanf(arqTxt,"%d", &list[i]);
+        }
+      
+        fwrite(list,sizeof(int),TAMANHO_LIST,arqBin);
+    }
+
+    for(int i = 0; i < TAMANHO_LIST ; i++){
+        printf(" %d ",list[i]);
+    }
+
+    printf("\nArquivo gravado com sucesso !\n");
+
+    fclose(arqTxt);
+    fclose(arqBin);
+
+    arqBin = abrearq(nomePessoa,"rb");
+
+    while(fread(list,sizeof(int),TAMANHO_LIST,arqBin)){
+        max = achaMax(list,TAMANHO_LIST);
+        printf("MAX = %d\n",max);
+
+    }
+    fclose(arqBin);
+
+    return 0;
+}
+
+//function to open am archive and checks if it's openned properly 
+FILE * abrearq(char *file,char*mode){
+    FILE *a = fopen(file,mode);
+    if(a == NULL){
+        fprintf(stderr,"Erro ao abrir arquivo\n");
+        exit(1);
+    }
+    return a;
+}
+
+void criaNomeBin(char * str){
+   
+    for(int i = 0; i < strlen(str); i++){
+        if(str[i] == ' '){
+            str[i] = '_';
+        }
+        
+    }
+    strcat(str,".dat");
+}
+
+int achaMax(int *a, int tamanho){
+    int maior = 0;
+    for(int i = 0; i < tamanho ; i++){
+        if(a[i] > maior){
+            maior = a[i];
+        }
+    }
+    return maior;
+
+}
