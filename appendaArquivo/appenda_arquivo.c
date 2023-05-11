@@ -22,7 +22,7 @@ int main(void){
 
     fputc('\n', arq1); // Write the newline character to the destination file
     while(fgets(linha, sizeof(linha), arq2) != NULL){
-        printf("%s",linha);
+        
         fwrite(linha,sizeof(char),strlen(linha),arq1);
     }
 
