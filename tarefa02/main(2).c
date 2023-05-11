@@ -1,6 +1,12 @@
+//Thiago Pereira Camerato - 2212580
+
 //includes
 #include <stdio.h>
 #include <stdlib.h>
+
+//simbolic variables
+#define MAX_SENTENCA 80
+#define MAX_TEXTO 10000
 
 //function prototypes
 FILE *abrearq(char *str, char *mode);
@@ -8,63 +14,34 @@ int mystrlen(char *a);
 void mystrcpy(char *d, char *o);
 void criptografaEdecifra(char *a, int b);
 
-//simbolic variables
-#define MAX_SENTENCA 80
-#define MAX_TEXTO 10000
 
 //main function 
 int main(void){
     // variables
     FILE *arquivoIN;
-    FILE *arquivoOUT;
     int chave;
     char sentenca[MAX_SENTENCA + 1] = "";
     char texto[MAX_TEXTO + 1] = "";
     int tamanhoSentenca;
 
     // execution
-    arquivoIN = abrearq("texto.txt", "r");
-    arquivoOUT = abrearq("arquivoBinario.bin", "wb");
+   arquivoIN = abrearq("arquivoBinario.bin", "rb");
 
-    if (arquivoIN == NULL || arquivoOUT == NULL){
+    if (arquivoIN == NULL){
         fprintf(stderr, "saindo do programa !\n");
         exit(-2);
     }
 
-    printf("Digite o valor da chave!\n");
+    printf("Digite o valor(negativo) da chave para decifrar!\n");
     scanf("%d", &chave);
-    // 1) encrypt a sentense and writes it to a Binary file 
-    printf("TEXTO CRIPTOGRAFADO:\n\n");
-    while (!feof(arquivoIN)){
-        if (fgets(sentenca, MAX_SENTENCA, arquivoIN) != NULL){
-
-            tamanhoSentenca = mystrlen(sentenca) - 1;
-            *(sentenca + (mystrlen(sentenca) + 1)) = '\0';
-            //printf("sentenca normal : %s\n", sentenca);
-            fwrite(&tamanhoSentenca, sizeof(int), 1, arquivoOUT);
-            //printf("tamanho sentenca : %d\n", tamanhoSentenca);
-            criptografaEdecifra(sentenca, chave);
-            fwrite(sentenca, sizeof(char), tamanhoSentenca + 2, arquivoOUT);
-            //printf("sentenca criptografada : %s\n", sentenca);
-            printf("%s", sentenca);
-        }
-    }
-
-    fclose(arquivoIN);
-    fclose(arquivoOUT);
-
-    arquivoIN = abrearq("arquivoBinario.bin", "rb");
+    
     //2) reads encrypted message from Binary file and decrypt it then show it to the terminal 
-    printf("\nTEXTO DECIFRADO:\n\n");
+    printf("TEXTO DECIFRADO:\n\n");
     while (fread(&tamanhoSentenca, sizeof(int), 1, arquivoIN) == 1){
-        //printf("tamanho Sentenca : %d\n", tamanhoSentenca);
         fread(sentenca, sizeof(char), tamanhoSentenca + 2, arquivoIN);
-        //printf("Sentenca: %s\n", sentenca);
-        criptografaEdecifra(sentenca, (chave) * -1);
+        criptografaEdecifra(sentenca, chave);
         mystrcpy(texto + mystrlen(texto), sentenca);
-        //printf("texto: %s\n",texto);
         mystrcpy(texto + (mystrlen(texto) - 1), ". ");
-        //printf("texto decifrado : %s\n",texto);
     }
     printf("%s\n\n",texto);
     fclose(arquivoIN);
@@ -110,7 +87,7 @@ void criptografaEdecifra(char *a, int b){
         if (*a >= 'A' && *a <= 'Z'){ // upper case
             *a = (((*a - 'A') + b) % 26) + 'A';
         }   
-        else if (*a >= 'a' && *a <='z'){ // upper case
+        else if (*a >= 'a' && *a <='z'){ // lower case
             *a = (((*a - 'a') + b) % 26) + 'a'; 
         } // recursive call to next char
         criptografaEdecifra(a + 1, b);
@@ -122,11 +99,10 @@ void criptografaEdecifra(char *a, int b){
             *a = (((*a - 'A') + b + 26) % 26) + 'A';
         }
 
-        else if (*a >= 'a' && *a <= 'z'){ // upper case
+        else if (*a >= 'a' && *a <= 'z'){ // lower case
             *a = (((*a - 'a') + b + 26) % 26) + 'a';
         }
-        // recursive call to next char
-        
+        // recursive call to next char 
         criptografaEdecifra(a + 1, b);
     }
 }
