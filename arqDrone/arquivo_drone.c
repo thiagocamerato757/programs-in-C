@@ -23,8 +23,9 @@ int main(void){
     //execution 
     arqTxt = abrearq("dadosDrone2.txt","r");
     fscanf(arqTxt,"%[^:]:",nomePessoa);
-    printf("%s :",nomePessoa);
+    //printf("%s :",nomePessoa);
     criaNomeBin(nomePessoa);
+    printf("%s :",nomePessoa);
     arqBin = abrearq(nomePessoa,"wb");
 
     //reading from text file and writing data to binary file
@@ -49,11 +50,9 @@ int main(void){
     arqBin = abrearq(nomePessoa,"rb");
 
     //reading from binary 
-    while(fread(list,sizeof(int),TAMANHO_LIST,arqBin)){
-        max = achaMax(list,TAMANHO_LIST);
-        printf("MAX = %d\n",max);
-
-    }
+    fread(list,sizeof(int),TAMANHO_LIST,arqBin);
+    max = achaMax(list,TAMANHO_LIST);
+    printf("MAX = %d\n",max);
     fclose(arqBin);
 
     return 0;
@@ -71,15 +70,20 @@ FILE * abrearq(char *file,char*mode){
 
 //function to change the name of the operator and use it to define a binary file's name
 void criaNomeBin(char * str){
-   
+    char temp[100];  
+    
     for(int i = 0; i < strlen(str); i++){
         if(str[i] == ' '){
             str[i] = '_';
         }
-        
     }
-    strcat(str,".dat");
+
+    strcpy(temp, "stream_");  
+    strcat(temp, str); 
+    strcat(temp, ".dat"); 
+    strcpy(str, temp);
 }
+
 
 // function to search the greater value in a integer array 
 int achaMax(int *a, int tamanho){
