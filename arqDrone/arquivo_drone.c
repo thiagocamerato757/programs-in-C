@@ -23,9 +23,8 @@ int main(void){
     //execution 
     arqTxt = abrearq("dadosDrone2.txt","r");
     fscanf(arqTxt,"%[^:]:",nomePessoa);
-    //printf("%s :",nomePessoa);
-    criaNomeBin(nomePessoa);
     printf("%s :",nomePessoa);
+    criaNomeBin(nomePessoa);
     arqBin = abrearq(nomePessoa,"wb");
 
     //reading from text file and writing data to binary file
