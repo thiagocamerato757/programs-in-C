@@ -1,56 +1,77 @@
-/*Desenvolver uma função que leia o nome completo de alguém, por exemplo:
-– João José da Silva
-– Maria B. Albuquerque
-e retorne uma outra cadeia com o nome na forma:
-– Silva, J. J.
-– Albuquerque, M. B.
-*/
-
 //includes
 #include <stdio.h>
-#include<stdlib.h>
+#include <stdlib.h>
 #include <string.h>
 
-// function prototypes
-int contaIniciais(char *s);
-char *sobreNome(char *s);
-char *sobreNome(char *s);
+//function prototypes
+FILE *abrearq(char *name, char *mode);
+int CountIniciais(char *s);
+char *lastName(char *s);
 char *pegaIniciais(char *s);
-char *formatName(char *s);
+char *createName(char *s);
 
 
-// main function
+//main function
 int main(void){
-    // variables
-    char nome[100] = "";
-    char * novoNome;
+    //variables
+    FILE *arqIn;
+    FILE *arqOut;
+    char nome[100];
+    char ID[100];
+    float saldo;
+    int tamanhoNome;
+    char *newName;
 
-    // execution
-    printf("Digite seu nome: \n");
-    scanf("%[^\n]", nome);
-    novoNome = formatName(nome);
-    printf("Nome formatado : %s\n",novoNome);
-    free(novoNome);
+    //execution
+    arqIn = abrearq("banco.txt", "r");
+    arqOut = abrearq("arqBinario.bin", "wb");
+
+    while (fscanf(arqIn, "%[^:]:  %[^,] , %f\n", ID, nome, &saldo) == 3){
+        newName = createName(nome);
+        tamanhoNome = strlen(newName);
+        printf("nome formatado: %s\nTamanho da String: %d\nSaldo de %s: R$%.2f\n", newName, tamanhoNome, nome, saldo);
+        printf("**********************************************\n");
+        fwrite(&tamanhoNome, sizeof(int), 1, arqOut);
+        fwrite(newName, sizeof(char), tamanhoNome, arqOut);
+        fwrite(&saldo, sizeof(float), 1, arqOut);
+        free(newName);
+    }
+
+    newName = NULL;
+    fclose(arqIn);
+    fclose(arqOut);
+    printf("Arquivo gravado com sucesso!\n");
+    printf("Memórias liberadas com sucesso!\n");
+
     return 0;
 }
-
+// function to open an file
+FILE *abrearq(char *name, char *mode){
+    FILE *arq = fopen(name, mode);
+    if (arq == NULL){
+        fprintf(stderr, "Erro ao abrir arquivo!\n");
+        exit(2);
+    }
+    return arq;
+}
 //function that usues recursion to count the inicials of a string
-int contaIniciais(char *s){
+int CountIniciais(char *s){
     if (*s == '\0'){
         return 0;
     }
     else{
         if (*s >= 'A' && *s <= 'Z'){
-            return 1 + contaIniciais(s + 1);
+            return 1 + CountIniciais(s + 1);
         }
         else{
-            return 0 + contaIniciais(s + 1);
+            return 0 + CountIniciais(s + 1);
         }
     }
 }
+
 //functon that get's the last name of a string
-char *sobreNome(char *s){
-    int EspacosValidos = contaIniciais(s) - 1;
+char *lastName(char *s){
+    int EspacosValidos = CountIniciais(s) - 1;
     int counter = 0;
     int length = strlen(s);
     int lastSpaceIndex;
@@ -76,26 +97,27 @@ char *sobreNome(char *s){
     } while (*(s + lastSpaceIndex + j) != '\0');
 
     int tamanhoSobrenome = j-1;
-    char *lastName = (char *)malloc((tamanhoSobrenome + 3) * sizeof(char)); // 2 for ", " and 1 for null char
-    if (lastName == NULL){
+    char *sobrenome = (char *)malloc((tamanhoSobrenome + 3) * sizeof(char)); // 2 for ", " and 1 for null char
+    if (sobrenome == NULL){
         fprintf(stderr, "Erro ao alocar memória do sobrenome !\n");
         exit(1);
     }
 
     for (int j = 0; j < tamanhoSobrenome; j++){
-        *(lastName + j) = *(s + lastSpaceIndex + j + 1);
+        *(sobrenome + j) = *(s + lastSpaceIndex + j + 1);
     }
     
-    *(lastName + tamanhoSobrenome) = ',';
-    *(lastName + tamanhoSobrenome + 1) = ' ';
-    *(lastName + tamanhoSobrenome + 2) = '\0';
+    *(sobrenome + tamanhoSobrenome) = ',';
+    *(sobrenome + tamanhoSobrenome + 1) = ' ';
+    *(sobrenome + tamanhoSobrenome + 2) = '\0';
 
-    return lastName;
+    return sobrenome;
 }
+
 //function to get all the inicials of a string
 char *pegaIniciais(char *s){
     char *iniciais;
-    int qtdIniciais = contaIniciais(s) - 1;
+    int qtdIniciais = CountIniciais(s) - 1;
     
     iniciais = (char *)malloc((2 * qtdIniciais + 1) * sizeof(char));
     if (iniciais == NULL)
@@ -126,8 +148,9 @@ char *pegaIniciais(char *s){
 }
 
 //function to format a string (lastname, inicials.)
-char *formatName(char *s){
-    char *nome = sobreNome(s);
+char *createName(char *s)
+{
+    char *nome = lastName(s);
     char *iniciais = pegaIniciais(s);
     char *criaNome;
 
@@ -148,4 +171,3 @@ char *formatName(char *s){
 
     return criaNome;
 }
-
