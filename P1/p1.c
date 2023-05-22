@@ -69,7 +69,7 @@ int CountIniciais(char *s){
     }
 }
 
-//functon that get's the last name of a string
+//functon that get the last name of a string
 char *lastName(char *s){
     int EspacosValidos = CountIniciais(s) - 1;
     int counter = 0;
@@ -120,22 +120,18 @@ char *pegaIniciais(char *s){
     int qtdIniciais = CountIniciais(s) - 1;
     
     iniciais = (char *)malloc((2 * qtdIniciais + 1) * sizeof(char));
-    if (iniciais == NULL)
-    {
+    if (iniciais == NULL){
         fprintf(stderr, "Erro ao alocar memória das iniciais!\n");
         exit(1);
     }
     int i = 0;
     int j = 0;
     int espacosAteSobrenome = 0;
-    while (espacosAteSobrenome  < qtdIniciais)
-    {
-        if(*(s+i) == ' ')
-        {
+    while (espacosAteSobrenome  < qtdIniciais){
+        if(*(s+i) == ' '){
             espacosAteSobrenome++;
         }
-        if (*(s + i) >= 'A' && *(s + i) <= 'Z')
-        {
+        if (*(s + i) >= 'A' && *(s + i) <= 'Z'){
             *(iniciais + j) = *(s + i);
             *(iniciais + j + 1) = '.';
             j += 2;
@@ -148,8 +144,7 @@ char *pegaIniciais(char *s){
 }
 
 //function to format a string (lastname, inicials.)
-char *createName(char *s)
-{
+char *createName(char *s){
     char *nome = lastName(s);
     char *iniciais = pegaIniciais(s);
     char *criaNome;
@@ -157,8 +152,7 @@ char *createName(char *s)
     int tamanhoAlocado = strlen(nome) + strlen(iniciais) + 1;
 
     criaNome = (char *)malloc(tamanhoAlocado * sizeof(char));
-    if (criaNome == NULL)
-    {
+    if (criaNome == NULL){
         fprintf(stderr, "Erro ao alocar memória do nome formatado!\n");
         exit(1);
     }
