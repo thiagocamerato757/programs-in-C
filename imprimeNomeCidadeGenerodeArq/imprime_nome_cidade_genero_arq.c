@@ -29,7 +29,7 @@ int main(void){
 
     return 0;
 }
-
+//function to open an arq
 FILE * abrearquivo(char * name, char * mode){
     FILE * arq = fopen(name,mode);
     if(arq == NULL){
