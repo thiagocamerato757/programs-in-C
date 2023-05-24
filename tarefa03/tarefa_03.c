@@ -68,7 +68,7 @@ int main(void) {
                (float)vector[indicePessoaMaiorPeso]->info.peso);
     } 
     else {
-    printf("Nenhuma pessoa encontrada com a altura %.2f\n m ", alturaEspecificada);
+    printf("Nenhuma pessoa encontrada com a altura %.2f m\n ", alturaEspecificada);
     }   
     }
    
