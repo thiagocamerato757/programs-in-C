@@ -1,6 +1,7 @@
 {
     "cmake.configureOnOpen": true,
     "files.associations": {
-        "meu_header.h": "c"
+        "meu_header.h": "c",
+        "stdio.h": "c"
     }
 }
