@@ -1,9 +1,12 @@
+//includes 
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
+//creating simbolic variable
 #define TAMANHO_STRING 81
 
+//structed data 
 struct bioData {
     float altura;
     int peso;
@@ -18,6 +21,8 @@ struct client {
 
 typedef struct client Client;
 
+
+//function prototypes
 FILE* abrearq(char* str, char* mode);
 int countLines(char* fName);
 Client** lerMontarVetor(FILE* file, int linhas);
@@ -26,13 +31,17 @@ float mean(Client ** p, int qtd);
 float standardDeviation(Client** data, int qtd , float media);
 void freeMem(Client** cl, int lines);
 
+
+//main function 
 int main(void) {
+    //variables
     FILE* arqText;
     int lines;
     Client** vector;
     float mediaPeso;
     float desvioPadrao;
 
+    //execution
     lines = countLines("clientes.txt");
     arqText = abrearq("clientes.txt", "r");
     vector = lerMontarVetor(arqText, lines);
@@ -47,6 +56,7 @@ int main(void) {
     return 0;
 }
 
+//function to open a file
 FILE* abrearq(char* str, char* mode) {
     FILE* arq = fopen(str, mode);
     if (arq == NULL) {
@@ -56,20 +66,21 @@ FILE* abrearq(char* str, char* mode) {
     return arq;
 }
 
+//function that opens a file and count the it's /*  */number of lines
 int countLines(char * fName) {
     FILE * arq = abrearq(fName,"r");
     char ch;
     int contaLinha = 0;
     while ((ch = fgetc(arq)) != EOF) {
         if (ch == '\n') {
-            contaLinha++; //counting how many lines are in a arq.txt
+            contaLinha++;
         }
     }
     contaLinha++;
     fclose(arq);
     return contaLinha;
 }
-
+//function that creates an array of pointers and includes all related data in it 
 Client** lerMontarVetor(FILE* file, int linhas) {
     Client** vetorPointer;
     char name[TAMANHO_STRING];
@@ -104,6 +115,7 @@ Client** lerMontarVetor(FILE* file, int linhas) {
     return vetorPointer;
 }
 
+//function to print the array of pointers
 void imprimeVetor(Client** clients, int qtd) {
     printf(" Clientes :\n");
     printf(" --------------------------------------\n");
@@ -113,6 +125,7 @@ void imprimeVetor(Client** clients, int qtd) {
     printf(" --------------------------------------\n");
 }
 
+//function to calculate the mean of the weights 
 float mean(Client ** p, int qtd){
     float soma = 0;
     for(int i = 0; i < qtd; i++ ){
@@ -121,6 +134,7 @@ float mean(Client ** p, int qtd){
     return (soma/(float)qtd);
 }
 
+//function to calculate the standart Deviation of the weights
 float standardDeviation(Client** data, int qtd , float media) {
     float varia = 0.0;
 
@@ -139,7 +153,7 @@ float standardDeviation(Client** data, int qtd , float media) {
     return stdDeviation;
 }
 
-
+//function to free the dynamic alocated memory
 void freeMem(Client** cl, int lines) {
     for (int i = 0; i < lines; i++) {
         free(cl[i]);
