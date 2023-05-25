@@ -47,15 +47,16 @@ int main(void) {
 
     //execution
     arqText = abrearq("clientes.txt", "r");
-    printf(" Clientes :\n");
     lines = countLines("clientes.txt");
-    vector = lerMontarVetor(arqText, lines);
-    imprimeVetor(vector, lines);
-    mediaPeso = mean(vector,lines);
     if(lines == 0){
+        printf("O arquivo esta vazio!\n");
         printf("Média e Desvio padrão não calculável(divisão por zero !)\n");
     }
     else{
+        printf("Clientes :\n");
+        vector = lerMontarVetor(arqText, lines);
+        imprimeVetor(vector, lines);
+        mediaPeso = mean(vector,lines);
         printf("Média do peso : %.2f kg",mediaPeso);
         desvioPadrao = standardDeviation(vector,lines,mediaPeso);
         printf("     Desvio padrão do peso : %.2f\n",desvioPadrao);
@@ -67,13 +68,13 @@ int main(void) {
                vector[indicePessoaMaiorPeso]->nome, vector[indicePessoaMaiorPeso]->info.altura, 
                (float)vector[indicePessoaMaiorPeso]->info.peso);
     } 
-    else {
-    printf("Nenhuma pessoa encontrada com a altura %.2f m\n ", alturaEspecificada);
-    }   
+        else {
+        printf("Nenhuma pessoa encontrada com a altura %.2f m\n ", alturaEspecificada);
+        }
+
+        freeMem(vector, lines);   
     }
    
-
-    freeMem(vector, lines);
     fclose(arqText);
     return 0;
 }
@@ -139,8 +140,7 @@ Client** lerMontarVetor(FILE* file, int linhas) {
 //function to print the array of pointers
 void imprimeVetor(Client** clients, int qtd) {
     if (qtd == 0){
-            printf("O arquivo está vazio!\n");
-            return;
+        return;
     }
     else{
         printf(" --------------------------------------\n");
