@@ -47,6 +47,9 @@ int main(void) {
 
     //execution
     arqText = abrearq("clientes.txt", "r");
+    if(arqText == NULL){
+        exit(2);
+    }
     lines = countLines("clientes.txt");
     if(lines == 0){
         printf("O arquivo esta vazio!\n");
@@ -64,12 +67,12 @@ int main(void) {
         scanf("%f",&alturaEspecificada);
         indicePessoaMaiorPeso = buscaBinaria(vector,lines,alturaEspecificada);
         if (indicePessoaMaiorPeso != -1) {
-        printf("Registro da pessoa de maior peso com altura %.2f: %s, %.2f m %.1f kg\n", alturaEspecificada,
+        printf("Registro da pessoa de maior peso com altura %.2f m : %s, %.2f m %.1f kg\n", alturaEspecificada,
                vector[indicePessoaMaiorPeso]->nome, vector[indicePessoaMaiorPeso]->info.altura, 
                (float)vector[indicePessoaMaiorPeso]->info.peso);
     } 
         else {
-        printf("Nenhuma pessoa encontrada com a altura %.2f m\n ", alturaEspecificada);
+        printf("Nenhum paciente encontrada com a altura %.2f m\n ", alturaEspecificada);
         }
 
         freeMem(vector, lines);   
@@ -84,12 +87,12 @@ FILE* abrearq(char* str, char* mode) {
     FILE* arq = fopen(str, mode);
     if (arq == NULL) {
         fprintf(stderr, "Erro ao abrir o arquivo!\n");
-        exit(2);
+        return arq;
     }
     return arq;
 }
 
-//function that opens a file and count the it's /*  */number of lines
+//function that opens a file and count the it's number of lines
 int countLines(char * fName) {
     FILE * arq = abrearq(fName,"r");
     char ch;
@@ -173,7 +176,7 @@ float standardDeviation(Client** data, int qtd , float media) {
     float varia = 0.0;
 
     if(qtd == 0){
-        return 0;
+        return 0.0;
     }
     else{
 
