@@ -25,7 +25,7 @@ typedef struct client Client;
 //function prototypes
 FILE* abrearq(char* str, char* mode);
 int countLines(char* fName);
-Client** lerMontarVetor(FILE* file, int linhas);
+Client** lerMontarVetor(char * file, int linhas);
 void imprimeVetor(Client** clients, int qtd);
 float mean(Client ** p, int qtd);
 float standardDeviation(Client** data, int qtd , float media);
@@ -37,27 +37,25 @@ void freeMem(Client** cl, int lines);
 //main function 
 int main(void) {
     //variables
-    FILE* arqText;
     int lines;
-    Client** vector;
+    Client ** vector;
     float mediaPeso;
     float desvioPadrao;
     int indicePessoaMaiorPeso;
     float alturaEspecificada;
 
     //execution
-    arqText = abrearq("clientes.txt", "r");
-    if(arqText == NULL){
-        exit(2);
-    }
     lines = countLines("clientes.txt");
     if(lines == 0){
-        printf("O arquivo esta vazio!\n");
+        printf("O arquivo existe e está vazio!\n");
         printf("Média e Desvio padrão não calculável(divisão por zero !)\n");
+    }
+    else if(lines == -1){
+        printf("O arquivo não existe!\n");
     }
     else{
         printf("Clientes :\n");
-        vector = lerMontarVetor(arqText, lines);
+        vector = lerMontarVetor("clientes.txt", lines);
         imprimeVetor(vector, lines);
         mediaPeso = mean(vector,lines);
         printf("Média do peso : %.2f kg",mediaPeso);
@@ -77,8 +75,6 @@ int main(void) {
 
         freeMem(vector, lines);   
     }
-   
-    fclose(arqText);
     return 0;
 }
 
@@ -86,8 +82,7 @@ int main(void) {
 FILE* abrearq(char* str, char* mode) {
     FILE* arq = fopen(str, mode);
     if (arq == NULL) {
-        fprintf(stderr, "Erro ao abrir o arquivo!\n");
-        return arq;
+        return NULL;
     }
     return arq;
 }
@@ -95,6 +90,9 @@ FILE* abrearq(char* str, char* mode) {
 //function that opens a file and count the it's number of lines
 int countLines(char * fName) {
     FILE * arq = abrearq(fName,"r");
+    if(arq == NULL){
+        return -1;
+    }
     char ch;
     int contaLinha = 0;
     while ((ch = fgetc(arq)) != EOF) {
@@ -106,23 +104,24 @@ int countLines(char * fName) {
     return contaLinha;
 }
 //function that creates an array of pointers and includes all related data in it 
-Client** lerMontarVetor(FILE* file, int linhas) {
-    Client** vetorPointer;
+Client** lerMontarVetor(char * file, int linhas) {
+    Client ** vetorPointer;
     char name[TAMANHO_STRING];
     float altura;
     int peso;
-
-    vetorPointer = (Client**)malloc(linhas * sizeof(Client*));
-    if (vetorPointer == NULL) {
-        fprintf(stderr, "Erro ao alocar memória para os clientes.\n");
-        exit(1);
-    }
     int i = 0;
-    while (fscanf(file,"%[^:]:%f%d\n", name, &altura, &peso) == 3) {
+    FILE * arqText = abrearq(file,"r");
+
+    vetorPointer = (Client **)malloc(linhas*sizeof(Client * ));
+    if(vetorPointer == NULL){
+        return NULL;
+        fclose(arqText);
+    }
+    while (fscanf(arqText,"%[^:]:%f%d\n", name, &altura, &peso) == 3) {
         vetorPointer[i] = (Client*)malloc(sizeof(Client));
         if (vetorPointer[i] == NULL) {
-            fprintf(stderr, "Erro ao alocar memória para o cliente número %d.\n", i);
-            exit(1);
+            fclose(arqText);
+            return NULL;
         }
 
         int j;
@@ -136,7 +135,7 @@ Client** lerMontarVetor(FILE* file, int linhas) {
 
         i++;
     }
-
+    fclose(arqText);
     return vetorPointer;
 }
 
@@ -158,42 +157,30 @@ void imprimeVetor(Client** clients, int qtd) {
 
 //function to calculate the mean of the weights 
 float mean(Client ** p, int qtd){
-    if (qtd == 0){
-        return 0.0;
-    }
-    else{
-        float soma = 0;
-        for(int i = 0; i < qtd; i++ ){
-            soma += (float) p[i]->info.peso;
-        }
-        return (soma/(float)qtd);
-    }
    
+    float soma = 0;
+    for(int i = 0; i < qtd; i++ ){
+        soma += (float) p[i]->info.peso;
+    }
+    return (soma/(float)qtd);
+
 }
 
 //function to calculate the standart Deviation of the weights
 float standardDeviation(Client** data, int qtd , float media) {
     float varia = 0.0;
 
-    if(qtd == 0){
-        return 0.0;
+    for (int i = 0; i < qtd; i++) {
+        varia += (data[i]->info.peso - media) * (data[i]->info.peso - media);
     }
-    else{
-
-        for (int i = 0; i < qtd; i++) {
-            varia += (data[i]->info.peso - media) * (data[i]->info.peso - media);
-        }
-
-        varia /= qtd;
-        float stdDeviation = 0;
-
-        for (int i = 0; i < qtd; i++) {
-            stdDeviation += (data[i]->info.peso - media) * (data[i]->info.peso - media);
-        }
-
-        stdDeviation = sqrt(stdDeviation / qtd);
-        return stdDeviation;
+    varia /= qtd;
+    float stdDeviation = 0;
+    for (int i = 0; i < qtd; i++) {
+        stdDeviation += (data[i]->info.peso - media) * (data[i]->info.peso - media);
     }
+    stdDeviation = sqrt(stdDeviation / qtd);
+    return stdDeviation;
+   
 
 }
 
@@ -210,8 +197,7 @@ int comparaAltura(Client* clienteA, float clienteB) {
         return 1;
     } else {
         return 0;
-    }
-}
+    } }
 
 // Binary search to find the index of the person with the highest weight at a given height
 // Returns the index of the person with the highest weight at the specified height
