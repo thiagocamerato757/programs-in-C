@@ -100,7 +100,7 @@ int countLines(char * fName) {
             contaLinha++;
         }
     }
-
+    fclose(arq);
     return contaLinha;
 }
 //function that creates an array of pointers and includes all related data in it 
@@ -141,17 +141,14 @@ Client** lerMontarVetor(char * file, int linhas) {
 
 //function to print the array of pointers
 void imprimeVetor(Client** clients, int qtd) {
-    if (qtd == 0){
-        return;
+  
+    
+    printf(" --------------------------------------\n");
+    for (int i = 0; i < qtd; i++) {
+    
+    printf("| %-15s-> %6.2f m %6.1f kg |\n", clients[i]->nome, clients[i]->info.altura, (float)clients[i]->info.peso);
     }
-    else{
-        printf(" --------------------------------------\n");
-        for (int i = 0; i < qtd; i++) {
-     
-        printf("| %-15s-> %6.2f m %6.1f kg |\n", clients[i]->nome, clients[i]->info.altura, (float)clients[i]->info.peso);
-        }
-        printf(" --------------------------------------\n");
-    }
+    printf(" --------------------------------------\n");
     
 }
 
