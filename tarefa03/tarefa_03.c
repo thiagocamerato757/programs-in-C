@@ -9,7 +9,7 @@
 //structed data 
 struct bioData {
     float altura;
-    int peso;
+    float peso;
 };
 
 typedef struct bioData BioData;
