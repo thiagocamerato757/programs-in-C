@@ -106,7 +106,7 @@ void whr(Cliente** cli, char genero, int qtdClients, float * media, float * desv
         risco = 0.85;
     }
     else if (genero == 'M') {
-        risco = 1.0;
+        risco = 1.00;
     }
     for (int i = 0; i < qtdClients; i++) {
         if (cli[i]->genero == genero){
