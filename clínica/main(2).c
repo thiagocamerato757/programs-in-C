@@ -1,3 +1,4 @@
+
 //includes
 #include<stdio.h>
 #include<stdlib.h>
@@ -22,7 +23,7 @@ struct cliente {
 typedef struct cliente Cliente;
 
 //function prototypes
-FILE* abrearq(char* nome, const char* mode);
+FILE* abrearq(char* nome, char* mode);
 void whr(Cliente** cli, char genero, int qtdClients, float* media, float* desvio);
 void liberamemoria(Cliente** cl, int qtd);
 
@@ -32,8 +33,8 @@ int main(void) {
     FILE* arqBin;
     int linhaBin;
     Cliente** clientePointer;
-    float mean;
-    float stdDeviation;
+    float mean = 0;
+    float stdDeviation = 0;
 
     //execution
 
@@ -71,16 +72,17 @@ int main(void) {
                     return 1;
                 }
 
-                /*printf("%s %d %c %.2f %.2f\n", clientePointer[i]->nome, clientePointer[i]->id, clientePointer[i]->genero,
-                    clientePointer[i]->m.cintura, clientePointer[i]->m.quadril);*/
             }
             fclose(arqBin);
+            printf("*******************************************************\n");
             whr(clientePointer, 'F', linhaBin, &mean, &stdDeviation);
             printf("Media do índece WHR no sexo feminino : %.2f\n", mean);
             printf("Desvio padrão do índece WHR no sexo feminino : %.2f\n", stdDeviation);
+            printf("*******************************************************\n");
             whr(clientePointer, 'M', linhaBin, &mean, &stdDeviation);
             printf("Media do índece WHR no sexo masculino : %.2f\n", mean);
             printf("Desvio padrão do índece WHR no sexo masculino : %.2f\n", stdDeviation);
+            printf("*******************************************************\n");
             liberamemoria(clientePointer, linhaBin);
         }
     }
@@ -88,7 +90,7 @@ int main(void) {
 }
 
 //function to open a file
-FILE* abrearq(char* nome, const char* mode) {
+FILE* abrearq(char* nome, char* mode) {
     FILE* arquivo;
     arquivo = fopen(nome, mode);
     return arquivo;
@@ -96,7 +98,7 @@ FILE* abrearq(char* nome, const char* mode) {
 
 
 void whr(Cliente** cli, char genero, int qtdClients, float * media, float * desvio) {
-    float calculo;
+    float calculo = 0;
     float risco = 0;
     float soma = 0;
     int contasex = 0;
@@ -111,22 +113,22 @@ void whr(Cliente** cli, char genero, int qtdClients, float * media, float * desv
     for (int i = 0; i < qtdClients; i++) {
         if (cli[i]->genero == genero){
             calculo = cli[i]->m.cintura / cli[i]->m.quadril;
+            if (calculo > risco) {
+                printf("%s corre risco de saúde !\n", cli[i]->nome);
+            }
             contasex += 1;
             soma += calculo;
-            if (calculo > risco) {
-                printf("%s corre risco de saúde !\n\n", cli[i]->nome);
-            }
         }
     }
-    *media = soma / qtdClients;
+    *media = (soma / contasex);
 
-    for (int j = 0; j < contasex; j++) {
-        if (cli[j]->genero = genero) {
+    for (int j = 0; j < qtdClients; j++) {
+        if (cli[j]->genero == genero) {
             calculo = cli[j]->m.cintura / cli[j]->m.quadril;
-            variacao += (calculo - *media) * (calculo - *media);
+            variacao += (calculo - (*media)) * (calculo - (*media));
         }
     }
-   
+
     *desvio = sqrt(variacao / contasex);
 
 }

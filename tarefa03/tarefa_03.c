@@ -165,16 +165,12 @@ float mean(Client ** p, int qtd){
 
 //function to calculate the standart Deviation of the weights
 float standardDeviation(Client** data, int qtd , float media) {
-    float varia = 0.0;
-
-    for (int i = 0; i < qtd; i++) {
-        varia += (data[i]->info.peso - media) * (data[i]->info.peso - media);
-    }
-    varia /= qtd;
     float stdDeviation = 0;
+    
     for (int i = 0; i < qtd; i++) {
         stdDeviation += (data[i]->info.peso - media) * (data[i]->info.peso - media);
     }
+    
     stdDeviation = sqrt(stdDeviation / qtd);
     return stdDeviation;
    
