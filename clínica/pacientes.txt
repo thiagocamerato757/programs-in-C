@@ -1,0 +1,4 @@
+Lovelace 101 F 92.0 112.0
+Turing 102 M 120.0 110.0
+Penelope 103 F 80.0 115.0
+Shanon 104 M 100.0 90.0

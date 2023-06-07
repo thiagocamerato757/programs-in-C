@@ -213,7 +213,8 @@ int buscaBinaria(Client** vetor, int qtd, float altura) {
             while (indice < fim && comparaAltura(vetor[indice + 1], altura) == 0) {
                 if (vetor[indice + 1]->info.peso > vetor[indice]->info.peso) {
                     indice++;
-                } else {
+                } 
+                else {
                     break;
                 }
             }
