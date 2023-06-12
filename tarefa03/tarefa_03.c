@@ -43,7 +43,7 @@ void freeMem(Client** cl, int lines);
 int main(void) {
     //variables
     int lines;
-    Client ** vector;
+    Client **vector;
     float mediaPeso;
     float desvioPadrao;
     int indicePessoaMaiorPeso;
