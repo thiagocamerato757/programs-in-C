@@ -1,3 +1,8 @@
+//Thiago Pereira Camerato
+//2212580 
+//33B 
+
+
 //includes 
 #include <stdio.h>
 #include <stdlib.h>
