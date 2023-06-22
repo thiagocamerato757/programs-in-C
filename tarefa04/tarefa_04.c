@@ -136,9 +136,8 @@ void printGraph(Graph* graph, int numVertices) {
     for (int i = 0; i < numVertices; i++) {
         Node* currentNode = graph->linkedList[i];
 
-        while (currentNode != NULL) {
-            printf("(%d -> %d) ", i, currentNode->vertex);
-            currentNode = currentNode->next;
+        for (; currentNode != NULL; currentNode = currentNode->next) {
+            printf("(%d -> %d) ", i ,currentNode->vertex);
         }
     }
     printf("\n\n");
