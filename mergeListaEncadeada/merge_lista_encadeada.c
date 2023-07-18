@@ -77,7 +77,7 @@ void inserirNo(Node** listaResultante, Node* novoNo) {
             atual = atual->prox;
         }
         if (atual != NULL && atual->codigo == novoNo->codigo) {
-            free(novoNo); // Descarta nós com códigos repetidos
+            free(novoNo); //free repeated nodes
         } 
         else {
             if (anterior == NULL) {
@@ -106,7 +106,6 @@ Node* MergeListas(Node* lista1, Node* lista2) {
             lista2 = lista2->prox;
         } 
         else {
-            // Códigos iguais, escolher um dos nós
             inserirNo(&listaResultante, criarNo(lista1->codigo, lista1->nome));
             lista1 = lista1->prox;
             lista2 = lista2->prox;
