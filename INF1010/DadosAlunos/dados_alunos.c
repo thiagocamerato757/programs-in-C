@@ -32,7 +32,7 @@ int main(void) {
     scanf("%d", &numAlunos);
     alunos = criaTabela(numAlunos);
     if(!alunos){
-        printf("eero ao alocar memória!\n");
+        printf("erro ao alocar memória!\n");
         exit(1);
     }
     preencheTabela(alunos,numAlunos);
