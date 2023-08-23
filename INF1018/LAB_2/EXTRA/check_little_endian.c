@@ -5,6 +5,7 @@ int is_little(void){
 	char *bytePointer = (char *)&n;
 	//se o conteúdo contido no byte menos significativo for 1, então 
 	//é little-endian
+	printf("Conteúdo do byte menos significativo: %x\n",*bytePointer);
 	return(*bytePointer == 1);
 }
 
