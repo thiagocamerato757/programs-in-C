@@ -22,6 +22,6 @@ void saque(Conta *ct,float numb){
 }
 
 void imprimeSaldo(Conta ct){
-    printf("Saldo atual : %.3f",ct.saldo);
+    printf("Saldo atual : %.3f\n",ct.saldo);
     return;
 }
