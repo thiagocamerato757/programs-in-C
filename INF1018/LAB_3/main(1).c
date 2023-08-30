@@ -8,7 +8,7 @@ int main(void) {
 
   /* o byte mais significativo com todos os bits em '1' 
      e os outros bytes com o mesmo valor dos bytes de x */
-  z = x | 0xffff0000;
+  z = x | 0xff654321;
 
   printf("%08x %08x\n", y, z);
 }
