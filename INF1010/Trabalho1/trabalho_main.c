@@ -3,6 +3,7 @@
 #include<stdlib.h>
 
 int main(void) {
+    printf("-------------------------ITEM 1-------------------------\n");
     const char* expressao1 = "3 2 7 * + 1 -";
     const char* expressao2 = "2 3 4 1 + * -";
     const char* expressao3 = "5 1 2 + 4 * + 3 -";
@@ -15,11 +16,14 @@ int main(void) {
     int resultado4 = calculatePostfix(expressao4);
     int resultado5 = calculatePostfix(expressao5);
 
-    printf("Resultado da expressao 1: %d\n", resultado1);
-    printf("Resultado da expressao 2: %d\n", resultado2);
-    printf("Resultado da expressao 3: %d\n", resultado3);
-    printf("Resultado da expressao 4: %d\n", resultado4);
-    printf("Resultado da expressao 5: %d\n", resultado5);
+    printf("Resultado da expressao %s: %d\n", expressao1, resultado1);
+    printf("Resultado da expressao %s: %d\n", expressao2, resultado2);
+    printf("Resultado da expressao %s: %d\n", expressao3, resultado3);
+    printf("Resultado da expressao %s: %d\n", expressao4, resultado4);
+    printf("Resultado da expressao %s: %d\n", expressao5, resultado5);
+
+    printf("-------------------------ITEM 2-------------------------\n");
+
 
     return 0;
 }
