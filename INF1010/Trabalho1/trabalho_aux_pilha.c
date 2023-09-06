@@ -1,5 +1,5 @@
 //Includes
-#include "trabalho_aux.h"
+#include "trabalho_aux_pilha.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>

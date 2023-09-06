@@ -1,4 +1,5 @@
-#include "trabalho_aux.h"
+#include "trabalho_aux_pilha.h"
+#include "trabalho_aux_lista.h"
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -23,7 +24,43 @@ int main(void) {
     printf("Resultado da expressao "" %s "": %d\n", expressao5, resultado5);
 
     printf("-------------------------ITEM 2-------------------------\n");
+    NO *list1 = NULL;
+    NO *list2 = NULL;
 
+    // Generate two lists of 10 integers in the range [1,100] in ascending order
+    for (int i = 1; i <= 10; i++) {
+        insertSorted(&list1, rand() % 100 + 1);
+        insertSorted(&list2, rand() % 100 + 1);
+    }
 
+    printf("lista L1: ");
+    printList(list1);
+
+    printf("lista L2: ");
+    printList(list2);
+
+    // Create a new list by interleaving the values of the generated lists
+    NO *mergedList = interleaveLists(list1,list2);
+    printf("lista L3: ");
+    printList(mergedList);
+
+    // Free the memory allocated for the lists
+    while (list1 != NULL) {
+        NO *temp = list1;
+        list1 = list1->next;
+        free(temp);
+    }
+
+    while (list2 != NULL) {
+        NO *temp = list2;
+        list2 = list2->next;
+        free(temp);
+    }
+
+    while (mergedList != NULL) {
+        NO *temp = mergedList;
+        mergedList = mergedList->next;
+        free(temp);
+    }
     return 0;
 }
