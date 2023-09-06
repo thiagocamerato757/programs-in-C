@@ -16,11 +16,11 @@ int main(void) {
     int resultado4 = calculatePostfix(expressao4);
     int resultado5 = calculatePostfix(expressao5);
 
-    printf("Resultado da expressao %s: %d\n", expressao1, resultado1);
-    printf("Resultado da expressao %s: %d\n", expressao2, resultado2);
-    printf("Resultado da expressao %s: %d\n", expressao3, resultado3);
-    printf("Resultado da expressao %s: %d\n", expressao4, resultado4);
-    printf("Resultado da expressao %s: %d\n", expressao5, resultado5);
+    printf("Resultado da expressao "" %s "": %d\n", expressao1, resultado1);
+    printf("Resultado da expressao "" %s "": %d\n", expressao2, resultado2);
+    printf("Resultado da expressao "" %s "": %d\n", expressao3, resultado3);
+    printf("Resultado da expressao "" %s "": %d\n", expressao4, resultado4);
+    printf("Resultado da expressao "" %s "": %d\n", expressao5, resultado5);
 
     printf("-------------------------ITEM 2-------------------------\n");
 
