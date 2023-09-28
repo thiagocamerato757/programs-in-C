@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-#include<stdio.h>
-#include<stdlib.h>
-#include "trabalho2_aux.h"
-
-abb *createAbb(void){
-    return NULL;
-}
-=======
 #include "trabalho2_aux.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -145,4 +136,3 @@ void freeTree(abb* tree) {
     freeTree(tree->right);
     free(tree);
 }
->>>>>>> cfb1c8c71d4fc48ab530834ebe4043587636ce26
