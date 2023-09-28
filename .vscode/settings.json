@@ -2,6 +2,8 @@
     "cmake.configureOnOpen": true,
     "files.associations": {
         "meu_header.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "trabalho2_aux.h": "c",
+        "stdlib.h": "c"
     }
 }
