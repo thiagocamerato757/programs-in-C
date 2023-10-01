@@ -94,10 +94,10 @@ void findCompetitors(abb* tree, int infoB, int* visitedNodes) {
         } else {
             // Found the competitor with the desired height
             if (current->left) {
-                firstAdditional = max_min_value(current->left, 1); // Predecessor
+                firstAdditional = predecessor_successor(current,0,current->info);// Predecessor
             }
             if (current->right) {
-                secondAdditional = max_min_value(current->right, 0); // Successor
+                secondAdditional = predecessor_successor(current,1,current->info);// Successor
             }
             break;
         }
@@ -107,13 +107,15 @@ void findCompetitors(abb* tree, int infoB, int* visitedNodes) {
 
     if (firstAdditional) {
         printf("Competitor A: %d\n", firstAdditional->info);
-    } else {
+    } 
+    else {
         printf("Competition invalid\n");
     }
 
     if (secondAdditional) {
         printf("Competitor C: %d\n", secondAdditional->info);
-    } else {
+    } 
+    else {
         printf("Competition invalid\n");
     }
 }

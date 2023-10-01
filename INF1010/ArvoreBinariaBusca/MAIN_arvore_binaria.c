@@ -3,20 +3,10 @@
 #include "AUX_arvore_binaria_busca.h"
 
 int main(void) {
-    BinarySearchTree *arv = createTree();
-    
+    BinarySearchTree *arv;
+
+    arv->inf.numb = 15;
     // Inserindo os elementos na árvore
-    addTree(arv,15);
-    addTree(arv,10);
-    addTree(arv,20);
-    addTree(arv,5);
-    addTree(arv,18);
-    addTree(arv,16);
-    addTree(arv,19);
-    addTree(arv,25);
-    addTree(arv,22);
-    addTree(arv,30);
-    addTree(arv,21);
     addTree(arv,3);
     addTree(arv,7);
     addTree(arv,17);

@@ -1,9 +1,12 @@
-//structed data
 
-//binary search tree like struct
+//structed data 
+
+//struct to Binary search tree
+
 struct ABB
 {
     int info;
+    struct ABB *father;
     struct ABB *left;
     struct ABB *right;
 }; typedef struct ABB abb;
