@@ -1,0 +1,38 @@
+.data
+Sf: .string "%d\n"
+
+.text
+.globl main
+main:
+  pushq %rbp
+  movq %rsp, %rbp
+  subq $16, %rsp
+  movl %r13d, -4(%rbp)
+  movl %r10d, -8(%rbp)
+  
+
+  movl $1, %r13d
+  movl $0, %r10d
+L1:
+  cmpl  %r10d,$10
+  je L2
+  movl %r13d, %ebx
+  imull %ebx, %ebx
+	
+  movl $0,%eax
+  movq $Sf, %rdi
+  movl %ebx, %esi
+  call printf
+  
+
+  addl $1, %r10d
+  addl $1, %r13d
+  jmp L1
+L2:
+  movq %rbp, %rsp
+  movl -4(%rbp),%r13d
+  movl -8(%rbp),%r10d
+  popq %rbp
+  xorl %eax, %eax
+  ret
+
