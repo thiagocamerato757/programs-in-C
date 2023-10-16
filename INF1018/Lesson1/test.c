@@ -1,6 +1,4 @@
 //includes
-#include <stdio.h>
-#include <stdlib.h>
 #include "converte.h"
 
 //main function 
@@ -16,12 +14,12 @@ int main(void){
   
   //------------------------------------teste1-------------------------------------------------
   utfFile = abreArq("utf8_peq.txt","r");
-  varintFile = abreArq("Var_peq.bin","rb");
-  outputVarintV1 = abreArq("U->V(teste1).bin","wb");
+  varintFile = abreArq("var_peq","rb");
+  outputVarintV1 = abreArq("U->V(teste1)","wb");
   outputUtf8V1 = abreArq("V->U(teste1).txt","w");
 
     if (utfFile == NULL || varintFile == NULL ) {
-        fprintf(stderr,"Erro ao abrir os arquivos");
+        fprintf(stderr,"Erro ao abrir os arquivos do teste 1\n");
         return 1;
     }
 
@@ -42,12 +40,12 @@ int main(void){
     fclose(outputUtf8V1);
 //----------------------------------teste2------------------------------------------------------
     utfFile = abreArq("utf8_demo.txt","r");
-    varintFile = abreArq("Var_demo.bin","rb");
-    outputVarintV2 = abreArq("U->V(teste2).bin","wb");
+    varintFile = abreArq("var_demo","rb");
+    outputVarintV2 = abreArq("U->V(teste2)","wb");
     outputUtf8V2 = abreArq("V->U(teste2).txt","w");
 
     if (utfFile == NULL || varintFile == NULL ) {
-        fprintf(stderr,"Erro ao abrir os arquivos");
+        fprintf(stderr,"Erro ao abrir os arquivos do teste 2\n");
         return 1;
     }
 

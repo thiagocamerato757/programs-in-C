@@ -1,76 +1,62 @@
 #include "converte.h"
+
 #include <stdio.h>
-#include <stdlib.h>
+#include "converte.h"
 
 int utf2varint(FILE *arq_entrada, FILE *arq_saida) {
-    int unicodeValue;
-
-    while (fscanf(arq_entrada, "%d", &unicodeValue) == 1) {
-        if (unicodeValue >= 0 && unicodeValue <= 0x10FFFF) {
-            char buffer[5];
-            int byteCount = 0;
-
-            if (unicodeValue <= 0x7F) {
-                buffer[0] = (char)unicodeValue;
-                byteCount = 1;
-            } else if (unicodeValue <= 0x7FF) {
-                buffer[0] = (char)(0xC0 | ((unicodeValue >> 6) & 0x1F));
-                buffer[1] = (char)(0x80 | (unicodeValue & 0x3F));
-                byteCount = 2;
-            } else if (unicodeValue <= 0xFFFF) {
-                buffer[0] = (char)(0xE0 | ((unicodeValue >> 12) & 0x0F));
-                buffer[1] = (char)(0x80 | ((unicodeValue >> 6) & 0x3F));
-                buffer[2] = (char)(0x80 | (unicodeValue & 0x3F));
-                byteCount = 3;
-            } else if (unicodeValue <= 0x10FFFF) {
-                buffer[0] = (char)(0xF0 | ((unicodeValue >> 18) & 0x07));
-                buffer[1] = (char)(0x80 | ((unicodeValue >> 12) & 0x3F));
-                buffer[2] = (char)(0x80 | ((unicodeValue >> 6) & 0x3F));
-                buffer[3] = (char)(0x80 | (unicodeValue & 0x3F));
-                byteCount = 4;
-            }
-
-            fwrite(buffer, 1, byteCount, arq_saida);
+    int codepoint;
+    while ((codepoint = fgetc(arq_entrada)) != EOF) {
+        if (codepoint < 128) {
+            fputc(codepoint, arq_saida);
         } else {
-            fprintf(stderr, "Valor Unicode fora do intervalo válido: %d\n", unicodeValue);
-            return -1;
+            int remaining_bytes = 0;
+            if (codepoint < 224) {
+                remaining_bytes = 1;
+            } else if (codepoint < 240) {
+                remaining_bytes = 2;
+            } else {
+                remaining_bytes = 3;
+            }
+            int varint = codepoint;
+            for (int i = 0; i < remaining_bytes; i++) {
+                codepoint = fgetc(arq_entrada);
+                varint = (varint << 8) | codepoint;
+            }
+            fwrite(&varint, 1, 4, arq_saida);
         }
     }
-
     return 0;
 }
 
 int varint2utf(FILE *arq_entrada, FILE *arq_saida) {
-    char buffer[5];
-    int bytesRead;
-
-    while ((bytesRead = fread(buffer, 1, 5, arq_entrada)) > 0) {
-        int unicodeValue = 0;
-
-        if ((buffer[0] & 0x80) == 0) {
-            unicodeValue = buffer[0];
-        } else if ((buffer[0] & 0xE0) == 0xC0) {
-            unicodeValue = (buffer[0] & 0x1F) << 6;
-            unicodeValue |= (buffer[1] & 0x3F);
-        } else if ((buffer[0] & 0xF0) == 0xE0) {
-            unicodeValue = (buffer[0] & 0x0F) << 12;
-            unicodeValue |= (buffer[1] & 0x3F) << 6;
-            unicodeValue |= (buffer[2] & 0x3F);
-        } else if ((buffer[0] & 0xF8) == 0xF0) {
-            unicodeValue = (buffer[0] & 0x07) << 18;
-            unicodeValue |= (buffer[1] & 0x3F) << 12;
-            unicodeValue |= (buffer[2] & 0x3F) << 6;
-            unicodeValue |= (buffer[3] & 0x3F);
+    unsigned char varint[4];
+    while (fread(varint, 4, 1, arq_entrada) == 1) {
+        unsigned int codepoint = (varint[0] << 24) | (varint[1] << 16) | (varint[2] << 8) | varint[3];
+        if (codepoint < 128) {
+            fputc(codepoint, arq_saida);
         } else {
-            fprintf(stderr, "Varint inválido encontrado no arquivo.\n");
-            return -1;
+            int num_bytes;
+            if (codepoint < 2048) {
+                num_bytes = 2;
+            } else if (codepoint < 65536) {
+                num_bytes = 3;
+            } else {
+                num_bytes = 4;
+            }
+            for (int i = num_bytes - 1; i > 0; i--) {
+                unsigned char byte = 0x80 | (codepoint & 0x3F);
+                codepoint >>= 6;
+                fputc(byte, arq_saida);
+            }
+            unsigned char first_byte = (0xFF << (8 - num_bytes)) | codepoint;
+            fputc(first_byte, arq_saida);
         }
-
-        fprintf(arq_saida, "%d ", unicodeValue);
     }
-
     return 0;
 }
+
+
+
 
 FILE *abreArq(char*name,char*mode){
     return fopen(name,mode);
