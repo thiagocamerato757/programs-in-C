@@ -1,5 +1,6 @@
 #include "converte.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int utf2varint(FILE *arq_entrada, FILE *arq_saida) {
     int unicodeValue;
@@ -69,4 +70,8 @@ int varint2utf(FILE *arq_entrada, FILE *arq_saida) {
     }
 
     return 0;
+}
+
+FILE *abreArq(char*name,char*mode){
+    return fopen(name,mode);
 }

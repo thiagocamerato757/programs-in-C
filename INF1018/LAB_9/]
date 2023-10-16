@@ -1,0 +1,22 @@
+.text
+.globl fat
+fat:
+    pushq %rbp
+    movq %rsp,%rbp
+    subq $16,%rsp
+    cmpl $0,%edi
+    je L1
+    movl %edi,-4(%rbp)
+    movl %edi,%r10d
+    movl %r10d,-8(%rbp)
+    decl %edi
+    call fat    
+    imull %r10d,%eax
+    movl -4(%rbp),%edi
+    movl -8(%rbp),%r10d
+    L1:
+       movl -4(%rbp),%edi
+       movl -8(%rbp),%r10d
+       movl $1,%eax
+       leave
+       ret 
