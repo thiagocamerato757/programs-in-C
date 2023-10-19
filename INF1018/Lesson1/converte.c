@@ -1,5 +1,4 @@
 #include "converte.h"
-#include "converte.h"
 #include <stdio.h>
 
 // Function to convert UTF-8 to varint
