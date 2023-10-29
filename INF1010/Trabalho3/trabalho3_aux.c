@@ -1,118 +1,122 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include "trabalho3_aux.h"
 
-#define TABLE_SIZE 1024
 
-typedef struct HashNode {
-    char key[8];
-    int value;
-    struct HashNode *next;
-} HashNode;
+unsigned int hash(char* key, int size) {
+    unsigned int hash1 = 0;
 
-HashNode *hash_table[TABLE_SIZE];
+    for (int i = 0; key[i] != '\0'; i++) {
+        char ch = key[i];
 
-unsigned long hash_function(char *key) {
-    unsigned long hash = 5381;
-    int c;
-
-    while ((c = *key++)) {
-        hash = ((hash << 5) + hash) + c; // DJB2 hash function
-    }
-
-    return hash % TABLE_SIZE;
-}
-
-void insert(char *key) {
-    unsigned long index = hash_function(key);
-
-    HashNode *new_node = (HashNode *)malloc(sizeof(HashNode));
-    if (new_node == NULL) {
-        perror("Memory allocation error");
-        exit(1);
-    }
-    strncpy(new_node->key, key, 8);
-    new_node->value = 1;
-    new_node->next = NULL;
-
-    if (hash_table[index] == NULL) {
-        hash_table[index] = new_node;
-    } else {
-        HashNode *current = hash_table[index];
-        while (current->next != NULL) {
-            current = current->next;
+        if (ch >= 'A' && ch <= 'Z') {
+            ch = ch - 'A';
+        } else if (ch >= '0' && ch <= '9') {
+            ch = ch - '0' + 26;
         }
-        current->next = new_node;
+
+        hash1 = (hash1 * 103 + ch) % size;
     }
+
+    return hash1;
 }
 
-int search(char *key) {
-    unsigned long index = hash_function(key);
+unsigned int secondaryHash(char* key, int size) {
+    unsigned int hash2 = 0;
 
-    HashNode *current = hash_table[index];
-    while (current != NULL) {
-        if (strncmp(current->key, key, 8) == 0) {
-            return current->value;
-        }
-        current = current->next;
+    for (int i = 0; key[i] != '\0'; i++) {
+        char ch = key[i];
+        hash2 = (hash2 * SECONDARY_HASH_CONSTANT + ch) % size;
     }
 
-    return 0;
+    return hash2;
 }
 
-int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        printf("Uso: %s arquivo_de_placas.txt\n", argv[0]);
-        return 1;
+HashTable* createHashTable(int size) {
+    HashTable* ht = (HashTable*)malloc(sizeof(HashTable));
+    ht->size = size;
+    ht->plates = (Node**)malloc(size * sizeof(Node*));
+    for (int i = 0; i < size; i++) {
+        ht->plates[i] = NULL;
     }
+    return ht;
+}
 
-    FILE *file = fopen(argv[1], "r");
-    if (file == NULL) {
-        perror("Erro ao abrir arquivo");
-        return 1;
-    }
+int insert(HashTable* ht, char* plate) {
+    int index = hash(plate, ht->size);
+    int collisions = 0;  // Counter for collisions
 
-    char line[10];
-    int collisions = 0;
-    clock_t start_time, end_time;
-    double insertion_time, search_time;
+    // If the slot is occupied, handle collisions using double hashing
+    while (ht->plates[index] != NULL) {
+        index = (index + secondaryHash(plate, ht->size)) % ht->size;
+        collisions++;
 
-    for (int i = 0; i < TABLE_SIZE; i++) {
-        hash_table[i] = NULL;
-    }
-
-    start_time = clock();
-
-    while (fgets(line, sizeof(line), file) != NULL) {
-        line[8] = '\0';
-        if (search(line) == 0) {
-            insert(line);
-        } else {
-            collisions++;
+        if (collisions >= ht->size) {
+            return -1; // The table is full
         }
     }
 
-    end_time = clock();
-    insertion_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->plate = strdup(plate);
+    newNode->next = NULL;
 
-    rewind(file); // Reset file position for search
+    ht->plates[index] = newNode;
 
-    start_time = clock();
+    return collisions; // Return the number of collisions for this insertion
+}
+int search(HashTable* ht, char* plate) {
+    int index = hash(plate, ht->size);
+    int originalIndex = index;
+    int collisions = 0;  // Counter for collisions
 
-    while (fgets(line, sizeof(line), file) != NULL) {
-        line[8] = '\0';
-        search(line);
+    while (ht->plates[index] != NULL && collisions < ht->size) {
+        if (strcmp(ht->plates[index]->plate, plate) == 0) {
+            return collisions; // Return the number of collisions for this search
+        }
+
+        // Handle secondary collision by double hashing
+        index = (index + secondaryHash(plate, ht->size)) % ht->size;
+        collisions++;
+
+        if (index == originalIndex) {
+            // We've completed one loop; the plate is not in the table.
+            return -1;
+        }
     }
 
-    end_time = clock();
-    search_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+    return -1;  // Plate not found
+}
+int removePlate(HashTable* ht, char* plate) {
+    int index = hash(plate, ht->size);
+    int originalIndex = index;
+    int collisions = 0;  // Counter for collisions
 
-    fclose(file);
+    while (ht->plates[index] != NULL && collisions < ht->size) {
+        if (strcmp(ht->plates[index]->plate, plate) == 0) {
+            // Found the plate, remove it
+            free(ht->plates[index]->plate);
+            free(ht->plates[index]);
+            ht->plates[index] = NULL;
+            return collisions; // Return the number of collisions for this removal
+        }
 
-    printf("Total de colisões: %d\n", collisions);
-    printf("Tempo de inclusão: %.6f segundos\n", insertion_time);
-    printf("Tempo de busca: %.6f segundos\n", search_time);
+        // Handle secondary collision by double hashing
+        index = (index + secondaryHash(plate, ht->size)) % ht->size;
+        collisions++;
 
-    return 0;
+        if (index == originalIndex) {
+            // We've completed one loop; the plate is not in the table.
+            return -1;
+        }
+    }
+
+    return -1;  // Plate not found
+}
+void destroyHashTable(HashTable* ht) {
+    for (int i = 0; i < ht->size; i++) {
+        if (ht->plates[i] != NULL) {
+            free(ht->plates[i]->plate);
+            free(ht->plates[i]);
+        }
+    }
+    free(ht->plates);
+    free(ht);
 }
