@@ -34,17 +34,6 @@ int main(void) {
     printf("Total de colisões durante inserção: %d\n", totalInsertCollisions);
     printf("Tempo total de inserção: %lf segundos\n", insertTime);
 
-    // Perform searches and measure time
-    int totalSearchCollisions = 0;
-    clock_t startSearch = clock();
-
-   
-
-    clock_t endSearch = clock();
-    double searchTime = ((double)(endSearch - startSearch)) / CLOCKS_PER_SEC;
-
-    printf("Total de colisões durante busca: %d\n", totalSearchCollisions);
-    printf("Tempo total de busca: %lf segundos\n", searchTime);
 
     // Remove a plate
     char plateToRemove[8]; // Replace with the plate you want to remove
@@ -60,12 +49,19 @@ int main(void) {
     char plateToFind[8];
     printf("Digite a placa a ser encontrada: ");
     scanf("%s", plateToFind);
+    int totalSearchCollisions = 0;
+    clock_t startSearch = clock();
     int searchCollisions = search(ht, plateToFind);
     if (searchCollisions >= 0) {
         printf("Total de colisões durante remoção: %d\n", searchCollisions);
     } else {
-        printf("A placa a ser removida não foi encontrada na tabela.\n");
+        printf("A placa a ser encontrada não foi localizada na tabela.\n");
     }
+    clock_t endSearch = clock();
+    double searchTime = ((double)(endSearch - startSearch)) / CLOCKS_PER_SEC;
+
+    printf("Total de colisões durante busca: %d\n", totalSearchCollisions);
+    printf("Tempo total de busca: %lf segundos\n", searchTime);
 
     // Liberate the memory of the hash table
     destroyHashTable(ht);
