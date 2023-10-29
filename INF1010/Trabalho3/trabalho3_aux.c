@@ -1,135 +1,122 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-
-#define TABLE_SIZE 1031
-
-typedef struct {
-    char** plates;  // Vetor de ponteiros para strings de placas
-    int size;       // Tamanho da tabela
-    int count;      // Número de elementos na tabela
-} HashTable;
+#include "trabalho3_aux.h"
 
 
+unsigned int hash(char* key, int size) {
+    unsigned int hash1 = 0;
 
-unsigned int hash(HashTable* ht, char* key, int table_size, int attempt) {
-    unsigned int index = (unsigned int)key[0] % table_size;
-    int i = 1;
+    for (int i = 0; key[i] != '\0'; i++) {
+        char ch = key[i];
 
-    while (ht->plates[index] != NULL) {
-        index = (index + (unsigned int)key[i] + i) % table_size;
-        i++;
+        if (ch >= 'A' && ch <= 'Z') {
+            ch = ch - 'A';
+        } else if (ch >= '0' && ch <= '9') {
+            ch = ch - '0' + 26;
+        }
+
+        hash1 = (hash1 * 103 + ch) % size;
     }
 
-    return index;
+    return hash1;
 }
 
+unsigned int secondaryHash(char* key, int size) {
+    unsigned int hash2 = 0;
 
-// Inicializa a tabela de dispersão
+    for (int i = 0; key[i] != '\0'; i++) {
+        char ch = key[i];
+        hash2 = (hash2 * SECONDARY_HASH_CONSTANT + ch) % size;
+    }
+
+    return hash2;
+}
+
 HashTable* createHashTable(int size) {
     HashTable* ht = (HashTable*)malloc(sizeof(HashTable));
     ht->size = size;
-    ht->count = 0;
-    ht->plates = (char**)malloc(size * sizeof(char*));
+    ht->plates = (Node**)malloc(size * sizeof(Node*));
     for (int i = 0; i < size; i++) {
-        ht->plates[i] = NULL;  // Inicializa todas as posições como nulas
+        ht->plates[i] = NULL;
     }
     return ht;
 }
 
-// Insere uma placa na tabela de dispersão e retorna o número de colisões
-int insert(HashTable* ht, const char* plate) {
-    int attempt = 0;
-    int index = hash(plate, ht->size, attempt);
+int insert(HashTable* ht, char* plate) {
+    int index = hash(plate, ht->size);
+    int collisions = 0;  // Counter for collisions
 
-    // Enquanto a posição estiver ocupada, avance para a próxima
+    // If the slot is occupied, handle collisions using double hashing
     while (ht->plates[index] != NULL) {
-        attempt++;
-        index = (index + 1) % ht->size;  // Tratamento de colisões linear
-    }
+        index = (index + secondaryHash(plate, ht->size)) % ht->size;
+        collisions++;
 
-    ht->plates[index] = strdup(plate);
-    ht->count++;
-
-    return attempt;  // Retorna o número de colisões
-}
-
-// Busca uma placa na tabela de dispersão
-int search(HashTable* ht, const char* plate) {
-    int attempt = 0;
-    int index = hash(plate, ht->size, attempt);
-
-    while (ht->plates[index] != NULL) {
-        if (strcmp(ht->plates[index], plate) == 0) {
-            return 1;  // Encontrou a placa
+        if (collisions >= ht->size) {
+            return -1; // The table is full
         }
-        attempt++;
-        index = hash(plate, ht->size, attempt);
     }
-    return 0;  // Placa não encontrada
-}
 
-// Libera a memória alocada para a tabela de dispersão
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->plate = strdup(plate);
+    newNode->next = NULL;
+
+    ht->plates[index] = newNode;
+
+    return collisions; // Return the number of collisions for this insertion
+}
+int search(HashTable* ht, char* plate) {
+    int index = hash(plate, ht->size);
+    int originalIndex = index;
+    int collisions = 0;  // Counter for collisions
+
+    while (ht->plates[index] != NULL && collisions < ht->size) {
+        if (strcmp(ht->plates[index]->plate, plate) == 0) {
+            return collisions; // Return the number of collisions for this search
+        }
+
+        // Handle secondary collision by double hashing
+        index = (index + secondaryHash(plate, ht->size)) % ht->size;
+        collisions++;
+
+        if (index == originalIndex) {
+            // We've completed one loop; the plate is not in the table.
+            return -1;
+        }
+    }
+
+    return -1;  // Plate not found
+}
+int removePlate(HashTable* ht, char* plate) {
+    int index = hash(plate, ht->size);
+    int originalIndex = index;
+    int collisions = 0;  // Counter for collisions
+
+    while (ht->plates[index] != NULL && collisions < ht->size) {
+        if (strcmp(ht->plates[index]->plate, plate) == 0) {
+            // Found the plate, remove it
+            free(ht->plates[index]->plate);
+            free(ht->plates[index]);
+            ht->plates[index] = NULL;
+            return collisions; // Return the number of collisions for this removal
+        }
+
+        // Handle secondary collision by double hashing
+        index = (index + secondaryHash(plate, ht->size)) % ht->size;
+        collisions++;
+
+        if (index == originalIndex) {
+            // We've completed one loop; the plate is not in the table.
+            return -1;
+        }
+    }
+
+    return -1;  // Plate not found
+}
 void destroyHashTable(HashTable* ht) {
     for (int i = 0; i < ht->size; i++) {
-        free(ht->plates[i]);
+        if (ht->plates[i] != NULL) {
+            free(ht->plates[i]->plate);
+            free(ht->plates[i]);
+        }
     }
     free(ht->plates);
     free(ht);
-}
-
-void printHashTable(HashTable* ht) {
-    for (int i = 0; i < ht->size; i++) {
-        if (ht->plates[i] != NULL) {
-            printf("Posição %d: %s\n", i, ht->plates[i]);
-        } else {
-            printf("Posição %d: Vazia\n", i);
-        }
-    }
-}
-
-int main(void) {
-    HashTable* ht = createHashTable(TABLE_SIZE);
-
-    // Leitura das placas de um arquivo de texto
-    FILE* file = fopen("placasMercosul.txt", "r");
-    if (file == NULL) {
-        fprintf(stderr, "Erro ao abrir o arquivo.\n");
-        return 1;
-    }
-
-    char plate[8];
-    clock_t startTime, endTime;
-    int totalCollisions = 0;  // Contador de colisões
-
-    while (fscanf(file, "%s", plate) == 1) {
-        startTime = clock();
-        int collisions = insert(ht, plate);
-        totalCollisions += collisions;
-        endTime = clock();
-    }
-    fclose(file);
-
-    // Busca de exemplo
-    char searchPlate[] = "PVY7T80";
-    startTime = clock();
-    int result = search(ht, searchPlate);
-    endTime = clock();
-
-    if (result) {
-        printf("Placa encontrada na tabela.\n");
-    } else {
-        printf("Placa não encontrada.\n");
-    }
-    
-    //printHashTable(ht);
-    
-    // Imprime o total de colisões
-    printf("Total de colisões: %d\n", totalCollisions);
-
-    // Libera a memória da tabela de dispersão
-    destroyHashTable(ht);
-
-    return 0;
 }
