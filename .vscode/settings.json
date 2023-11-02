@@ -6,6 +6,7 @@
         "trabalho2_aux.h": "c",
         "stdlib.h": "c",
         "arq_convertor.h": "c",
-        "converte.h": "c"
+        "converte.h": "c",
+        "trabalho4_aux.h": "c"
     }
 }
