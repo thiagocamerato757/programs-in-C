@@ -1,7 +1,7 @@
-#include<stdio.h>
 #include <stdint.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include <stdio.h>
 
 #define PAGE_START(P) ((intptr_t)(P)&~(pagesize-1))
 #define PAGE_END(P) (((intptr_t)(P)+pagesize-1)&~(pagesize-1))
@@ -39,7 +39,7 @@ int add (int x) {
 }
 
 typedef int (*funcp) (int x);
-unsigned char codigo[] = {0x55,0x48, 0x89, 0xe5,0xe8,0x00,0x00,0x00,0x00,0xc9,0xc3};
+unsigned char codigo[] = {0x55,0x48, 0x89, 0xe5,0xe9,0x00,0x00,0x00,0x00,0xc9,0xc3};
 int main(void){
         int call_offset = (int)add - (int)(codigo + 9);
         *(int *)(codigo + 5) = call_offset;
@@ -50,5 +50,6 @@ int main(void){
         }
         return 0;
 }
+
 
 

@@ -2,8 +2,7 @@
 .globl foo
 foo:
 pushq %rbp
-movq %rsp,%rbp
-call add
+movq  %rsp,%rbp
+jmp add
 leave
 ret
-

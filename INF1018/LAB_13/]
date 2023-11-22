@@ -45,8 +45,9 @@ int main(void){
         *(int *)(codigo + 5) = call_offset;
         if(execpage(codigo,11) == 0){
                 funcp f = (funcp)codigo;
+                change = desloc;
                 int i = (*f)(10);
-                printf("%d\n",i);
+                printf("%d",i);
         }
         return 0;
 }
