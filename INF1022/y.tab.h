@@ -61,21 +61,22 @@ extern int yydebug;
     IGUAL = 267,
     MAIS = 268,
     MENOS = 269,
-    VEZES = 270,
-    DIVIDIDO = 271,
-    MENORIGUAL = 272,
-    MAIORIGUAL = 273,
-    MENOR = 274,
-    MAIOR = 275,
-    IGUALIGUAL = 276,
-    E = 277,
-    OU = 278,
-    NAO = 279,
-    ABREPAR = 280,
-    FECHAPAR = 281,
-    VIRGULA = 282,
-    ID = 283,
-    NUM = 284
+    DIVIDIDO = 270,
+    MENORIGUAL = 271,
+    MAIORIGUAL = 272,
+    MENOR = 273,
+    MAIOR = 274,
+    IGUALIGUAL = 275,
+    E = 276,
+    OU = 277,
+    NAO = 278,
+    ABREPAR = 279,
+    FECHAPAR = 280,
+    VIRGULA = 281,
+    ID = 282,
+    NUM = 283,
+    VEZES = 284,
+    UMINUS = 285
   };
 #endif
 /* Tokens.  */
@@ -91,21 +92,22 @@ extern int yydebug;
 #define IGUAL 267
 #define MAIS 268
 #define MENOS 269
-#define VEZES 270
-#define DIVIDIDO 271
-#define MENORIGUAL 272
-#define MAIORIGUAL 273
-#define MENOR 274
-#define MAIOR 275
-#define IGUALIGUAL 276
-#define E 277
-#define OU 278
-#define NAO 279
-#define ABREPAR 280
-#define FECHAPAR 281
-#define VIRGULA 282
-#define ID 283
-#define NUM 284
+#define DIVIDIDO 270
+#define MENORIGUAL 271
+#define MAIORIGUAL 272
+#define MENOR 273
+#define MAIOR 274
+#define IGUALIGUAL 275
+#define E 276
+#define OU 277
+#define NAO 278
+#define ABREPAR 279
+#define FECHAPAR 280
+#define VIRGULA 281
+#define ID 282
+#define NUM 283
+#define VEZES 284
+#define UMINUS 285
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

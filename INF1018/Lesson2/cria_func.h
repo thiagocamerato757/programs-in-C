@@ -13,6 +13,6 @@ typedef struct{
 	}valor;
 }DescParam;
 
-void* cria_func(void* f, DescParam params[], int n, unsigned char codigo[]);
+void cria_func(void* f, DescParam params[], int n, unsigned char codigo[]);
 
 #endif

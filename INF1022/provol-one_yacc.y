@@ -9,10 +9,16 @@ void yyerror(const char *s);
 %}
 
 %token ENTRADA SAIDA FIM ENQUANTO SE SENAO FAZAXVEZES INC ZERA
-%token IGUAL MAIS MENOS VEZES DIVIDIDO MENORIGUAL MAIORIGUAL MENOR MAIOR IGUALIGUAL E OU NAO
-%token ABREPAR FECHAPAR VIRGULA ID NUM
+%token IGUAL MAIS MENOS DIVIDIDO MENORIGUAL MAIORIGUAL MENOR MAIOR IGUALIGUAL E OU NAO
+%token ABREPAR FECHAPAR VIRGULA ID NUM VEZES
+
+%left '+' '-'
+%left '*' '/'
+%left UMINUS
+%left VEZES
 
 %%
+
 program : ENTRADA varlist SAIDA varlist cmds FIM
         ;
 
@@ -30,7 +36,7 @@ cmd : ENQUANTO ID FAZAXVEZES exp FIM
     | ID IGUAL exp
     | INC ABREPAR ID FECHAPAR
     | ZERA ABREPAR ID FECHAPAR
-    | FAZAXVEZES cmds XVEZES exp FIM
+    | FAZAXVEZES cmds VEZES exp FIM
     ;
 
 exp : exp OU exp
@@ -61,4 +67,3 @@ int main() {
     yyparse();
     return 0;
 }
-
