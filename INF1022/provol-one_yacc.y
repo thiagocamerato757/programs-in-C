@@ -4,62 +4,50 @@
 #include <string.h>
 
 int yylex();
-void yyerror(const char *s);
+void yyerror(const char* s);
 
 %}
 
-%token ENTRADA SAIDA FIM ENQUANTO SE SENAO FAZAXVEZES INC ZERA
-%token IGUAL MAIS MENOS DIVIDIDO MENORIGUAL MAIORIGUAL MENOR MAIOR IGUALIGUAL E OU NAO
-%token ABREPAR FECHAPAR VIRGULA ID NUM VEZES
+%union {
+    char* strval;
+    int numval;
+}
+
+%token <strval> ID
+%token <numval> NUM
+%token ENTRADA SAIDA ENQUANTO FACA FIMP FIML INC ZERA SE ENTAO SENAO VEZES VIRGULA IGUAL ABRE_PAREN FECHA_PAREN NEWLINE
 
 %left '+' '-'
 %left '*' '/'
-%left UMINUS
-%left VEZES
+
+%start program
 
 %%
+program : ENTRADA varlist NEWLINE SAIDA varlist NEWLINE cmds FIMP NEWLINE{ printf("Programa aceito!\n"); exit(EXIT_SUCCESS); }
+        
 
-program : ENTRADA varlist SAIDA varlist cmds FIM
+varlist : ID { printf("Variável: %s\n", $1); }
+        | ID VIRGULA varlist { printf("Variável: %s\n", $1); }
         ;
 
-varlist : ID VIRGULA varlist
-        | ID
-        ;
-
-cmds : cmd cmds
-     | cmd
+cmds : cmd NEWLINE cmds
+     | cmd NEWLINE
      ;
 
-cmd : ENQUANTO ID FAZAXVEZES exp FIM
-    | SE exp FAZAXVEZES cmds FIM
-    | SE exp FAZAXVEZES cmds SENAO cmds FIM
-    | ID IGUAL exp
-    | INC ABREPAR ID FECHAPAR
-    | ZERA ABREPAR ID FECHAPAR
-    | FAZAXVEZES cmds VEZES exp FIM
-    ;
-
-exp : exp OU exp
-    | exp E exp
-    | NAO exp
-    | exp MENOR exp
-    | exp MAIOR exp
-    | exp MENORIGUAL exp
-    | exp MAIORIGUAL exp
-    | exp IGUALIGUAL exp
-    | exp MAIS exp
-    | exp MENOS exp
-    | exp VEZES exp
-    | exp DIVIDIDO exp
-    | ABREPAR exp FECHAPAR
-    | ID
-    | NUM
+cmd : ID IGUAL ID { printf("%s = %s\n", $1, $3); }
+    | ID IGUAL NUM { printf("%s = %d\n", $1, $3); }
+    | INC ABRE_PAREN ID FECHA_PAREN { printf("INC(%s)\n", $3); }
+    | ZERA ABRE_PAREN ID FECHA_PAREN { printf("ZERA(%s)\n", $3); }
+    | ENQUANTO ID FACA NEWLINE cmds FIML { printf("ENQUANTO %s FACA ... FIML\n", $2); }
+    | SE ID ENTAO NEWLINE cmds SENAO NEWLINE cmds FIML{ printf("SE %s ENTAO ... SENAO ... FIML\n", $2); }
+    | SE ID ENTAO cmds FIML { printf("SE %s ENTAO ...FIM\n", $2); }
+    | FACA cmds VEZES ID FIML { printf("FACA ... VEZES %s FIML\n", $4); }
     ;
 
 %%
 
-void yyerror(const char *s) {
-    fprintf(stderr, "Erro: %s\n", s);
+void yyerror(const char* s) {
+    printf("Prov-a-lone found a: %s\n", s);
     exit(EXIT_FAILURE);
 }
 
