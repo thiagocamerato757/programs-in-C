@@ -72,19 +72,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* codeBuffer = NULL;
-int codeIndex = 0;
-int bufferSize = 4096; // Initial buffer size
-
-#define INITIALIZE_CODE_BUFFER() { codeBuffer = (char*)malloc(bufferSize); if (codeBuffer == NULL) { fprintf(stderr, "Memory allocation error\n"); exit(EXIT_FAILURE); } codeBuffer[0] = '\0'; codeIndex = 0; }
-#define APPEND_CODE(code) { int newLength = codeIndex + strlen(code); if (newLength >= bufferSize) { bufferSize *= 2; codeBuffer = (char*)realloc(codeBuffer, bufferSize); if (codeBuffer == NULL) { fprintf(stderr, "Memory allocation error\n"); exit(EXIT_FAILURE); } } strcat(codeBuffer, code); codeIndex = newLength; }
-#define PRINT_CODE() { printf("Codigo Objeto:\n%s\n", codeBuffer); }
-#define CLEANUP() { free(codeBuffer); }
-
-int yylex(); // Declare yylex
+int yylex();
+void yyerror(const char *s);
 
 
-#line 88 "provol-one_yacc.tab.c"
+#line 80 "provol-one_yacc.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -132,16 +124,35 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    NAME = 258,
-    NEWLINE = 259,
-    NUM = 260,
-    ASSIGN = 261,
-    PLUS = 262,
-    AP = 263,
-    FP = 264,
-    MULT = 265,
-    END = 266,
-    PROGRAM = 267
+    ID = 258,
+    NUM = 259,
+    ENTRADA = 260,
+    SAIDA = 261,
+    ENQUANTO = 262,
+    FACA = 263,
+    FIMP = 264,
+    FIML = 265,
+    INC = 266,
+    ZERA = 267,
+    SE = 268,
+    ENTAO = 269,
+    SENAO = 270,
+    VEZES = 271,
+    VIRGULA = 272,
+    IGUAL = 273,
+    ABRE_PAREN = 274,
+    FECHA_PAREN = 275,
+    NEWLINE = 276,
+    MAIS = 277,
+    MENOS = 278,
+    MULT = 279,
+    DIVID = 280,
+    IQUALL = 281,
+    NIQUAL = 282,
+    MAIOR = 283,
+    MENOR = 284,
+    MAIORI = 285,
+    MENORI = 286
   };
 #endif
 
@@ -149,12 +160,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 19 "provol-one_yacc.y"
+#line 11 "provol-one_yacc.y"
 
-    char* strval;
+    char *strval;
     int numval;
 
-#line 158 "provol-one_yacc.tab.c"
+#line 169 "provol-one_yacc.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -471,21 +482,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  7
+#define YYFINAL  5
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   17
+#define YYLAST   119
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  13
+#define YYNTOKENS  32
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  7
+#define YYNNTS  6
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  10
+#define YYNRULES  26
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  21
+#define YYNSTATES  75
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   267
+#define YYMAXUTOK   286
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -523,15 +534,18 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,    40,    40,    47,    48,    56,    59,    68,    75,    78,
-      85
+       0,    56,    56,    61,    64,    73,    80,    85,    92,    98,
+     105,   113,   124,   132,   144,   151,   158,   165,   172,   179,
+     186,   193,   200,   207,   214,   219,   224
 };
 #endif
 
@@ -540,9 +554,12 @@ static const yytype_int8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "NAME", "NEWLINE", "NUM", "ASSIGN",
-  "PLUS", "AP", "FP", "MULT", "END", "PROGRAM", "$accept", "program",
-  "statements", "statement", "assignment", "exp", "term", YY_NULLPTR
+  "$end", "error", "$undefined", "ID", "NUM", "ENTRADA", "SAIDA",
+  "ENQUANTO", "FACA", "FIMP", "FIML", "INC", "ZERA", "SE", "ENTAO",
+  "SENAO", "VEZES", "VIRGULA", "IGUAL", "ABRE_PAREN", "FECHA_PAREN",
+  "NEWLINE", "MAIS", "MENOS", "MULT", "DIVID", "IQUALL", "NIQUAL", "MAIOR",
+  "MENOR", "MAIORI", "MENORI", "$accept", "program", "varlist", "cmds",
+  "cmd", "exp", YY_NULLPTR
 };
 #endif
 
@@ -552,11 +569,13 @@ static const char *const yytname[] =
 static const yytype_int16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
+     285,   286
 };
 # endif
 
-#define YYPACT_NINF (-10)
+#define YYPACT_NINF (-17)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -564,15 +583,20 @@ static const yytype_int16 yytoknum[] =
 #define YYTABLE_NINF (-1)
 
 #define yytable_value_is_error(Yyn) \
-  0
+  ((Yyn) == YYTABLE_NINF)
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -9,     2,     7,     3,    -3,   -10,     6,   -10,    -2,     8,
-     -10,   -10,   -10,    -2,     4,   -10,   -10,    -5,    -2,   -10,
-     -10
+       1,     6,    10,    -6,     8,   -17,     6,    11,   -17,     6,
+      12,    27,    -3,     9,    27,    -5,    13,     9,    22,    15,
+       9,   -17,   -17,     9,    37,    25,    39,    40,    55,    23,
+      27,    77,    67,    28,     9,     9,     9,     9,     9,     9,
+       9,     9,     9,     9,    43,    30,    56,    96,   -17,   -17,
+     -17,    27,    85,    85,    26,    26,    44,    44,    44,    44,
+      44,    44,    38,   -17,   -17,    27,    78,   -17,    -7,   -17,
+     -17,    97,    27,   109,   -17
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -580,21 +604,26 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,     0,     0,     0,     3,     0,     1,     0,     0,
-       4,     5,    10,     0,     6,     8,     2,     0,     0,     9,
-       7
+       0,     0,     0,     3,     0,     1,     0,     0,     4,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,    25,    24,     0,     0,     0,     0,     0,     0,     0,
+       6,     7,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     2,     5,
+      26,     0,    14,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,     0,     8,     9,     0,     0,    13,     0,    10,
+      12,     0,     0,     0,    11
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -10,   -10,   -10,     9,   -10,     1,    -1
+     -17,   -17,    -4,   -14,   -17,   -16
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     4,     5,     6,    14,    15
+      -1,     2,     4,    18,    19,    24
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -602,37 +631,64 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       3,    12,    18,     1,    19,     3,    13,     7,     9,     8,
-      11,    18,    16,    10,    17,     0,     0,    20
+      25,    28,     8,    70,    31,    10,     1,    32,    71,     3,
+       5,     6,    21,    22,    26,    20,    49,     9,    52,    53,
+      54,    55,    56,    57,    58,    59,    60,    61,    23,     7,
+      12,    29,    27,    11,    13,    14,    30,    66,    15,    16,
+      17,    44,    45,    46,    48,    33,    62,     0,    67,    51,
+      63,    68,    38,    39,    40,    41,    42,    43,    73,    34,
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    47,
+      -1,    -1,    -1,    -1,    -1,    -1,    64,    34,    35,    36,
+      37,    38,    39,    40,    41,    42,    43,    50,    69,    34,
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    34,
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    36,
+      37,    38,    39,    40,    41,    42,    43,    65,    72,    74
 };
 
 static const yytype_int8 yycheck[] =
 {
-       3,     3,     7,    12,     9,     3,     8,     0,    11,     6,
-       4,     7,     4,     4,    13,    -1,    -1,    18
+      14,    17,     6,    10,    20,     9,     5,    23,    15,     3,
+       0,    17,     3,     4,    19,    18,    30,     6,    34,    35,
+      36,    37,    38,    39,    40,    41,    42,    43,    19,    21,
+       3,     9,    19,    21,     7,     8,    21,    51,    11,    12,
+      13,    16,     3,     3,    21,     8,     3,    -1,    10,    21,
+      20,    65,    26,    27,    28,    29,    30,    31,    72,    22,
+      23,    24,    25,    26,    27,    28,    29,    30,    31,    14,
+      26,    27,    28,    29,    30,    31,    20,    22,    23,    24,
+      25,    26,    27,    28,    29,    30,    31,    20,    10,    22,
+      23,    24,    25,    26,    27,    28,    29,    30,    31,    22,
+      23,    24,    25,    26,    27,    28,    29,    30,    31,    24,
+      25,    26,    27,    28,    29,    30,    31,    21,    21,    10
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,    12,    14,     3,    15,    16,    17,     0,     6,    11,
-      16,     4,     3,     8,    18,    19,     4,    18,     7,     9,
-      19
+       0,     5,    33,     3,    34,     0,    17,    21,    34,     6,
+      34,    21,     3,     7,     8,    11,    12,    13,    35,    36,
+      18,     3,     4,    19,    37,    35,    19,    19,    37,     9,
+      21,    37,    37,     8,    22,    23,    24,    25,    26,    27,
+      28,    29,    30,    31,    16,     3,     3,    14,    21,    35,
+      20,    21,    37,    37,    37,    37,    37,    37,    37,    37,
+      37,    37,     3,    20,    20,    21,    35,    10,    35,    10,
+      10,    15,    21,    35,    10
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    13,    14,    15,    15,    16,    17,    18,    18,    19,
-      19
+       0,    32,    33,    34,    34,    35,    35,    36,    36,    36,
+      36,    36,    36,    36,    37,    37,    37,    37,    37,    37,
+      37,    37,    37,    37,    37,    37,    37
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     4,     1,     2,     2,     3,     3,     1,     3,
-       1
+       0,     2,     9,     1,     3,     3,     2,     3,     4,     4,
+       6,     9,     6,     5,     3,     3,     3,     3,     3,     3,
+       3,     3,     3,     3,     1,     1,     3
 };
 
 
@@ -1328,88 +1384,300 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 40 "provol-one_yacc.y"
-                                         {
-    PRINT_CODE(); // Only print the code when parsing is successful
-    CLEANUP();    // Free allocated memory
+#line 56 "provol-one_yacc.y"
+                                                                          {
+    printf("Código Fonte Resultante:\n%s\n", (yyvsp[-2].strval));
     exit(EXIT_SUCCESS);
 }
-#line 1338 "provol-one_yacc.tab.c"
+#line 1393 "provol-one_yacc.tab.c"
     break;
 
   case 3:
-#line 47 "provol-one_yacc.y"
-                       {(yyval.strval) = (yyvsp[0].strval);}
-#line 1344 "provol-one_yacc.tab.c"
+#line 61 "provol-one_yacc.y"
+             {
+    (yyval.strval) = (yyvsp[0].strval);
+}
+#line 1401 "provol-one_yacc.tab.c"
     break;
 
   case 4:
-#line 48 "provol-one_yacc.y"
-                           {
-    char* result = (char*)malloc(strlen((yyvsp[-1].strval)) + strlen((yyvsp[0].strval)) + 1);
-    strcpy(result, (yyvsp[-1].strval));
-    strcat(result, (yyvsp[0].strval));
-    (yyval.strval) = result;
-}
-#line 1355 "provol-one_yacc.tab.c"
+#line 64 "provol-one_yacc.y"
+                             {
+            char *result = malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[0].strval)) + 3);
+            strcpy(result, (yyvsp[-2].strval));
+            strcat(result, ",");
+            strcat(result, (yyvsp[0].strval));
+            (yyval.strval) = result;
+        }
+#line 1413 "provol-one_yacc.tab.c"
     break;
 
   case 5:
-#line 56 "provol-one_yacc.y"
-                               {(yyval.strval) = (yyvsp[-1].strval);}
-#line 1361 "provol-one_yacc.tab.c"
+#line 73 "provol-one_yacc.y"
+                        {
+    char *result = malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[0].strval)) + 3);
+    strcpy(result, (yyvsp[-2].strval));
+    strcat(result, "\n");
+    strcat(result, (yyvsp[0].strval));
+    (yyval.strval) = result;
+}
+#line 1425 "provol-one_yacc.tab.c"
     break;
 
   case 6:
-#line 59 "provol-one_yacc.y"
-                             {
-    char* result = (char*)malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[0].strval)) + 1);
-    strcpy(result, (yyvsp[-2].strval));
-    strcat(result, "=====");
-    strcat(result, (yyvsp[0].strval));
-    (yyval.strval) = result;
-}
-#line 1373 "provol-one_yacc.tab.c"
+#line 80 "provol-one_yacc.y"
+                   {
+         (yyval.strval) = (yyvsp[-1].strval);
+     }
+#line 1433 "provol-one_yacc.tab.c"
     break;
 
   case 7:
-#line 68 "provol-one_yacc.y"
-                    {
-    char* result = (char*)malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[0].strval)) + 1);
-    strcpy(result, (yyvsp[-2].strval));
-    strcat(result, "+");
-    strcat(result, (yyvsp[0].strval));
-    (yyval.strval) = result;
-}
-#line 1385 "provol-one_yacc.tab.c"
+#line 85 "provol-one_yacc.y"
+                   {
+         char *result = malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[0].strval)) + 2);
+         strcpy(result, (yyvsp[-2].strval));
+         strcat(result, "=");
+         strcat(result, (yyvsp[0].strval));
+         (yyval.strval) = result;
+     }
+#line 1445 "provol-one_yacc.tab.c"
     break;
 
   case 8:
-#line 75 "provol-one_yacc.y"
-           {(yyval.strval) = (yyvsp[0].strval);}
-#line 1391 "provol-one_yacc.tab.c"
+#line 92 "provol-one_yacc.y"
+                                    {
+        char *result = malloc(strlen((yyvsp[-1].strval)) + 6);
+        strcpy(result, (yyvsp[-1].strval));
+        strcat(result, "+=1");
+        (yyval.strval) = result;
+    }
+#line 1456 "provol-one_yacc.tab.c"
     break;
 
   case 9:
-#line 78 "provol-one_yacc.y"
-                 {
-    char* result = (char*)malloc(strlen((yyvsp[-1].strval)) + 2);
-    strcpy(result, "{");
-    strcat(result, (yyvsp[-1].strval));
-    strcat(result, "}");
-    (yyval.strval) = result;
-}
-#line 1403 "provol-one_yacc.tab.c"
+#line 98 "provol-one_yacc.y"
+                                     {
+        char *result = malloc(strlen((yyvsp[-1].strval)) + 6);
+        strcpy(result, (yyvsp[-1].strval));
+        strcat(result, "=");
+        strcat(result, "0");
+        (yyval.strval) = result;
+    }
+#line 1468 "provol-one_yacc.tab.c"
     break;
 
   case 10:
-#line 85 "provol-one_yacc.y"
-           {(yyval.strval) = (yyvsp[0].strval);}
-#line 1409 "provol-one_yacc.tab.c"
+#line 105 "provol-one_yacc.y"
+                                          {
+        char *result = malloc(strlen((yyvsp[-4].strval)) + strlen((yyvsp[-1].strval)) + 14);
+        strcpy(result, "while ");
+        strcat(result, (yyvsp[-4].strval));
+        strcat(result, ":\n");
+        strcat(result, (yyvsp[-1].strval));
+        (yyval.strval) = result;
+    }
+#line 1481 "provol-one_yacc.tab.c"
+    break;
+
+  case 11:
+#line 113 "provol-one_yacc.y"
+                                                        {
+        char *result = malloc(strlen((yyvsp[-7].strval)) + strlen((yyvsp[-4].strval)) + strlen((yyvsp[-1].strval)) + 18);
+        strcpy(result, "if ");
+        strcat(result, (yyvsp[-7].strval));
+        strcat(result, ":\n");
+        strcat(result, (yyvsp[-4].strval));
+        strcat(result, "\nelse:\n");
+        strcat(result, (yyvsp[-1].strval));
+        strcat(result, ":\n");
+        (yyval.strval) = result;
+    }
+#line 1497 "provol-one_yacc.tab.c"
+    break;
+
+  case 12:
+#line 124 "provol-one_yacc.y"
+                                     {
+        char *result = malloc(strlen((yyvsp[-4].strval)) + strlen((yyvsp[-1].strval)) + 10);
+        strcpy(result, "if ");
+        strcat(result, (yyvsp[-4].strval));
+        strcat(result, ":\n");
+        strcat(result, (yyvsp[-1].strval));
+        (yyval.strval) = result;
+    }
+#line 1510 "provol-one_yacc.tab.c"
+    break;
+
+  case 13:
+#line 132 "provol-one_yacc.y"
+                              {
+        char *result = malloc(strlen((yyvsp[-1].strval)) + strlen((yyvsp[-3].strval)) + 12);
+        strcpy(result, "for ");
+        strcat(result, (yyvsp[-1].strval));
+        strcat(result, " in range(");
+        strcat(result, (yyvsp[-1].strval));
+        strcat(result, "):\n");
+        strcat(result, (yyvsp[-3].strval));
+        (yyval.strval) = result;
+    }
+#line 1525 "provol-one_yacc.tab.c"
+    break;
+
+  case 14:
+#line 144 "provol-one_yacc.y"
+                   {
+        char *result = malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[0].strval)) + 4);
+        strcpy(result, (yyvsp[-2].strval));
+        strcat(result, "+");
+        strcat(result, (yyvsp[0].strval));
+        (yyval.strval) = result;
+    }
+#line 1537 "provol-one_yacc.tab.c"
+    break;
+
+  case 15:
+#line 151 "provol-one_yacc.y"
+                    {
+        char *result = malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[0].strval)) + 4);
+        strcpy(result, (yyvsp[-2].strval));
+        strcat(result, "-");
+        strcat(result, (yyvsp[0].strval));
+        (yyval.strval) = result;
+    }
+#line 1549 "provol-one_yacc.tab.c"
+    break;
+
+  case 16:
+#line 158 "provol-one_yacc.y"
+                   {
+        char *result = malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[0].strval)) + 4);
+        strcpy(result, (yyvsp[-2].strval));
+        strcat(result, "*");
+        strcat(result, (yyvsp[0].strval));
+        (yyval.strval) = result;
+    }
+#line 1561 "provol-one_yacc.tab.c"
+    break;
+
+  case 17:
+#line 165 "provol-one_yacc.y"
+                    {
+        char *result = malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[0].strval)) + 4);
+        strcpy(result, (yyvsp[-2].strval));
+        strcat(result, "/");
+        strcat(result, (yyvsp[0].strval));
+        (yyval.strval) = result;
+    }
+#line 1573 "provol-one_yacc.tab.c"
+    break;
+
+  case 18:
+#line 172 "provol-one_yacc.y"
+                     {
+        char *result = malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[0].strval)) + 4);
+        strcpy(result, (yyvsp[-2].strval));
+        strcat(result, "==");
+        strcat(result, (yyvsp[0].strval));
+        (yyval.strval) = result;
+    }
+#line 1585 "provol-one_yacc.tab.c"
+    break;
+
+  case 19:
+#line 179 "provol-one_yacc.y"
+                     {
+        char *result = malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[0].strval)) + 4);
+        strcpy(result, (yyvsp[-2].strval));
+        strcat(result, "!=");
+        strcat(result, (yyvsp[0].strval));
+        (yyval.strval) = result;
+    }
+#line 1597 "provol-one_yacc.tab.c"
+    break;
+
+  case 20:
+#line 186 "provol-one_yacc.y"
+                    {
+        char *result = malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[0].strval)) + 4);
+        strcpy(result, (yyvsp[-2].strval));
+        strcat(result, ">");
+        strcat(result, (yyvsp[0].strval));
+        (yyval.strval) = result;
+    }
+#line 1609 "provol-one_yacc.tab.c"
+    break;
+
+  case 21:
+#line 193 "provol-one_yacc.y"
+                    {
+        char *result = malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[0].strval)) + 4);
+        strcpy(result, (yyvsp[-2].strval));
+        strcat(result, "<");
+        strcat(result, (yyvsp[0].strval));
+        (yyval.strval) = result;
+    }
+#line 1621 "provol-one_yacc.tab.c"
+    break;
+
+  case 22:
+#line 200 "provol-one_yacc.y"
+                     {
+        char *result = malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[0].strval)) + 5);
+        strcpy(result, (yyvsp[-2].strval));
+        strcat(result, ">=");
+        strcat(result, (yyvsp[0].strval));
+        (yyval.strval) = result;
+    }
+#line 1633 "provol-one_yacc.tab.c"
+    break;
+
+  case 23:
+#line 207 "provol-one_yacc.y"
+                     {
+        char *result = malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[0].strval)) + 5);
+        strcpy(result, (yyvsp[-2].strval));
+        strcat(result, "<=");
+        strcat(result, (yyvsp[0].strval));
+        (yyval.strval) = result;
+    }
+#line 1645 "provol-one_yacc.tab.c"
+    break;
+
+  case 24:
+#line 214 "provol-one_yacc.y"
+          {
+        char *result = malloc(12);  // Ajuste este tamanho conforme necessário
+        sprintf(result, "%d", (yyvsp[0].numval));
+        (yyval.strval) = result;
+    }
+#line 1655 "provol-one_yacc.tab.c"
+    break;
+
+  case 25:
+#line 219 "provol-one_yacc.y"
+         {
+        char *result = malloc(strlen((yyvsp[0].strval)) + 1);
+        strcpy(result, (yyvsp[0].strval));
+        (yyval.strval) = result;
+    }
+#line 1665 "provol-one_yacc.tab.c"
+    break;
+
+  case 26:
+#line 224 "provol-one_yacc.y"
+                                 {
+        char *result = malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[-1].strval)) + 2);
+        strcpy(result, "(");
+        strcat(result, (yyvsp[-1].strval));
+        strcat(result, ")");
+        (yyval.strval) = result;
+    }
+#line 1677 "provol-one_yacc.tab.c"
     break;
 
 
-#line 1413 "provol-one_yacc.tab.c"
+#line 1681 "provol-one_yacc.tab.c"
 
       default: break;
     }
@@ -1641,16 +1909,15 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 88 "provol-one_yacc.y"
+#line 233 "provol-one_yacc.y"
 
 
-void yyerror(const char* s) {
-    printf("Prov-a-lone found a: %s\n", s);
+void yyerror(const char *s) {
+    printf("Provol-One encontrou um erro: %s\n", s);
     exit(EXIT_FAILURE);
 }
 
 int main() {
-    INITIALIZE_CODE_BUFFER();
     yyparse();
     return 0;
 }

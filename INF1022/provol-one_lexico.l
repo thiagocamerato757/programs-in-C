@@ -23,6 +23,16 @@ NUM [0-9]+
 "="          { return IGUAL; }
 "("          { return ABRE_PAREN; }
 ")"          { return FECHA_PAREN; }
+"+"          { return MAIS; }
+"-"          { return MENOS;}
+"*"          { return MULT; }
+"/"          { return DIVID;}
+"=="         { return IQUALL;}
+"!="         { return NIQUAL;}
+">"          { return MAIOR; }
+"<"          { return MENOR; }
+">="         { return MAIORI;}
+"<="         { return MENORI;}
 \n           { return NEWLINE; }
 [ \t]        ; // Ignorar espaços e tabs
 {ID}         { yylval.strval = strdup(yytext); return ID; }

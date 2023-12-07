@@ -4,50 +4,236 @@
 #include <string.h>
 
 int yylex();
-void yyerror(const char* s);
+void yyerror(const char *s);
 
 %}
 
 %union {
-    char* strval;
+    char *strval;
     int numval;
 }
 
+%type <strval> program varlist cmd cmds exp
 %token <strval> ID
 %token <numval> NUM
-%token ENTRADA SAIDA ENQUANTO FACA FIMP FIML INC ZERA SE ENTAO SENAO VEZES VIRGULA IGUAL ABRE_PAREN FECHA_PAREN NEWLINE
-
-%left '+' '-'
-%left '*' '/'
+%token <strval> ENTRADA
+%token <strval> SAIDA
+%token <strval> ENQUANTO
+%token <strval> FACA
+%token <strval> FIMP
+%token <strval> FIML
+%token <numval> INC
+%token <numval> ZERA
+%token <strval> SE
+%token <strval> ENTAO
+%token <strval> SENAO
+%token <strval> VEZES
+%token <strval> VIRGULA
+%token <numval> IGUAL
+%token <strval> ABRE_PAREN
+%token <strval> FECHA_PAREN
+%token <numval> NEWLINE
+%token <numval> MAIS
+%token <numval> MENOS
+%token <numval> MULT
+%token <numval> DIVID
+%token <numval> IQUALL
+%token <numval> NIQUAL
+%token <numval> MAIOR
+%token <numval> MENOR
+%token <numval> MAIORI
+%token <numval> MENORI
 
 %start program
 
-%%
-program : ENTRADA varlist NEWLINE SAIDA varlist NEWLINE cmds FIMP NEWLINE{ printf("Programa aceito!\n"); exit(EXIT_SUCCESS); }
-        
+%left MAIS MENOS
+%left MULT DIVID
+%nonassoc MENOR MAIOR MENORI MAIORI IQUALL NIQUAL
+%left IGUAL INC ZERA
 
-varlist : ID { printf("Variável: %s\n", $1); }
-        | ID VIRGULA varlist { printf("Variável: %s\n", $1); }
+%%
+
+program : ENTRADA varlist NEWLINE SAIDA varlist NEWLINE cmds FIMP NEWLINE {
+    printf("Código Fonte Resultante:\n%s\n", $7);
+    exit(EXIT_SUCCESS);
+}
+
+varlist : ID {
+    $$ = $1;
+}
+        | ID VIRGULA varlist {
+            char *result = malloc(strlen($1) + strlen($3) + 3);
+            strcpy(result, $1);
+            strcat(result, ",");
+            strcat(result, $3);
+            $$ = result;
+        }
         ;
 
-cmds : cmd NEWLINE cmds
-     | cmd NEWLINE
+cmds : cmd NEWLINE cmds {
+    char *result = malloc(strlen($1) + strlen($3) + 3);
+    strcpy(result, $1);
+    strcat(result, "\n");
+    strcat(result, $3);
+    $$ = result;
+}
+     | cmd NEWLINE {
+         $$ = $1;
+     }
      ;
 
-cmd : ID IGUAL ID { printf("%s = %s\n", $1, $3); }
-    | ID IGUAL NUM { printf("%s = %d\n", $1, $3); }
-    | INC ABRE_PAREN ID FECHA_PAREN { printf("INC(%s)\n", $3); }
-    | ZERA ABRE_PAREN ID FECHA_PAREN { printf("ZERA(%s)\n", $3); }
-    | ENQUANTO ID FACA NEWLINE cmds FIML { printf("ENQUANTO %s FACA ... FIML\n", $2); }
-    | SE ID ENTAO NEWLINE cmds SENAO NEWLINE cmds FIML{ printf("SE %s ENTAO ... SENAO ... FIML\n", $2); }
-    | SE ID ENTAO cmds FIML { printf("SE %s ENTAO ...FIM\n", $2); }
-    | FACA cmds VEZES ID FIML { printf("FACA ... VEZES %s FIML\n", $4); }
+cmd : ID IGUAL exp {
+         char *result = malloc(strlen($1) + strlen($3) + 2);
+         strcpy(result, $1);
+         strcat(result, "=");
+         strcat(result, $3);
+         $$ = result;
+     }
+    | INC ABRE_PAREN ID FECHA_PAREN {
+        char *result = malloc(strlen($3) + 6);
+        strcpy(result, $3);
+        strcat(result, "+=1");
+        $$ = result;
+    }
+    | ZERA ABRE_PAREN ID FECHA_PAREN {
+        char *result = malloc(strlen($3) + 6);
+        strcpy(result, $3);
+        strcat(result, "=");
+        strcat(result, "0");
+        $$ = result;
+    }
+    | ENQUANTO exp FACA NEWLINE cmds FIML {
+        char *result = malloc(strlen($2) + strlen($5) + 14);
+        strcpy(result, "while ");
+        strcat(result, $2);
+        strcat(result, ":\n");
+        strcat(result, $5);
+        $$ = result;
+    }
+    | SE exp ENTAO NEWLINE cmds SENAO NEWLINE cmds FIML {
+        char *result = malloc(strlen($2) + strlen($5) + strlen($8) + 18);
+        strcpy(result, "if ");
+        strcat(result, $2);
+        strcat(result, ":\n");
+        strcat(result, $5);
+        strcat(result, "\nelse:\n");
+        strcat(result, $8);
+        strcat(result, ":\n");
+        $$ = result;
+    }
+    | SE exp ENTAO NEWLINE cmds FIML {
+        char *result = malloc(strlen($2) + strlen($5) + 10);
+        strcpy(result, "if ");
+        strcat(result, $2);
+        strcat(result, ":\n");
+        strcat(result, $5);
+        $$ = result;
+    }
+    | FACA cmds VEZES ID FIML {
+        char *result = malloc(strlen($4) + strlen($2) + 12);
+        strcpy(result, "for ");
+        strcat(result, $4);
+        strcat(result, " in range(");
+        strcat(result, $4);
+        strcat(result, "):\n");
+        strcat(result, $2);
+        $$ = result;
+    }
+    ;
+
+exp : exp MAIS exp {
+        char *result = malloc(strlen($1) + strlen($3) + 4);
+        strcpy(result, $1);
+        strcat(result, "+");
+        strcat(result, $3);
+        $$ = result;
+    }
+    | exp MENOS exp {
+        char *result = malloc(strlen($1) + strlen($3) + 4);
+        strcpy(result, $1);
+        strcat(result, "-");
+        strcat(result, $3);
+        $$ = result;
+    }
+    | exp MULT exp {
+        char *result = malloc(strlen($1) + strlen($3) + 4);
+        strcpy(result, $1);
+        strcat(result, "*");
+        strcat(result, $3);
+        $$ = result;
+    }
+    | exp DIVID exp {
+        char *result = malloc(strlen($1) + strlen($3) + 4);
+        strcpy(result, $1);
+        strcat(result, "/");
+        strcat(result, $3);
+        $$ = result;
+    }
+    | exp IQUALL exp {
+        char *result = malloc(strlen($1) + strlen($3) + 4);
+        strcpy(result, $1);
+        strcat(result, "==");
+        strcat(result, $3);
+        $$ = result;
+    }
+    | exp NIQUAL exp {
+        char *result = malloc(strlen($1) + strlen($3) + 4);
+        strcpy(result, $1);
+        strcat(result, "!=");
+        strcat(result, $3);
+        $$ = result;
+    }
+    | exp MAIOR exp {
+        char *result = malloc(strlen($1) + strlen($3) + 4);
+        strcpy(result, $1);
+        strcat(result, ">");
+        strcat(result, $3);
+        $$ = result;
+    }
+    | exp MENOR exp {
+        char *result = malloc(strlen($1) + strlen($3) + 4);
+        strcpy(result, $1);
+        strcat(result, "<");
+        strcat(result, $3);
+        $$ = result;
+    }
+    | exp MAIORI exp {
+        char *result = malloc(strlen($1) + strlen($3) + 5);
+        strcpy(result, $1);
+        strcat(result, ">=");
+        strcat(result, $3);
+        $$ = result;
+    }
+    | exp MENORI exp {
+        char *result = malloc(strlen($1) + strlen($3) + 5);
+        strcpy(result, $1);
+        strcat(result, "<=");
+        strcat(result, $3);
+        $$ = result;
+    }
+    | NUM {
+        char *result = malloc(12);  // Ajuste este tamanho conforme necessário
+        sprintf(result, "%d", $1);
+        $$ = result;
+    }
+    | ID {
+        char *result = malloc(strlen($1) + 1);
+        strcpy(result, $1);
+        $$ = result;
+    }
+    | ABRE_PAREN exp FECHA_PAREN {
+        char *result = malloc(strlen($1) + strlen($2) + 2);
+        strcpy(result, "(");
+        strcat(result, $2);
+        strcat(result, ")");
+        $$ = result;
+    }
     ;
 
 %%
 
-void yyerror(const char* s) {
-    printf("Prov-a-lone found a: %s\n", s);
+void yyerror(const char *s) {
+    printf("Provol-One encontrou um erro: %s\n", s);
     exit(EXIT_FAILURE);
 }
 

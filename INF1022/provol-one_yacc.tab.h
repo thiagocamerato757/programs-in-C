@@ -49,16 +49,35 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    NAME = 258,
-    NEWLINE = 259,
-    NUM = 260,
-    ASSIGN = 261,
-    PLUS = 262,
-    AP = 263,
-    FP = 264,
-    MULT = 265,
-    END = 266,
-    PROGRAM = 267
+    ID = 258,
+    NUM = 259,
+    ENTRADA = 260,
+    SAIDA = 261,
+    ENQUANTO = 262,
+    FACA = 263,
+    FIMP = 264,
+    FIML = 265,
+    INC = 266,
+    ZERA = 267,
+    SE = 268,
+    ENTAO = 269,
+    SENAO = 270,
+    VEZES = 271,
+    VIRGULA = 272,
+    IGUAL = 273,
+    ABRE_PAREN = 274,
+    FECHA_PAREN = 275,
+    NEWLINE = 276,
+    MAIS = 277,
+    MENOS = 278,
+    MULT = 279,
+    DIVID = 280,
+    IQUALL = 281,
+    NIQUAL = 282,
+    MAIOR = 283,
+    MENOR = 284,
+    MAIORI = 285,
+    MENORI = 286
   };
 #endif
 
@@ -66,12 +85,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 19 "provol-one_yacc.y"
+#line 11 "provol-one_yacc.y"
 
-    char* strval;
+    char *strval;
     int numval;
 
-#line 75 "provol-one_yacc.tab.h"
+#line 94 "provol-one_yacc.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
