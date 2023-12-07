@@ -212,8 +212,11 @@ exp : exp MAIS exp {
         $$ = result;
     }
     | NUM {
-        char *result = malloc(12);  // Ajuste este tamanho conforme necessário
-        sprintf(result, "%d", $1);
+        int num_digits = snprintf(NULL, 0, "%d", $1);//calcula a qtd de digitos
+        char *result = malloc(num_digits + 1);  // +1 para o caractere nulo de terminação
+        snprintf(result, num_digits + 1, "%d", $1);//guarda a formatacao do num em string
+        $$ = result;
+
         $$ = result;
     }
     | ID {

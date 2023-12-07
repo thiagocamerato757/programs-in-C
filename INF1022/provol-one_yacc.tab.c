@@ -545,7 +545,7 @@ static const yytype_uint8 yyrline[] =
 {
        0,    56,    56,    61,    64,    73,    80,    85,    92,    98,
      105,   113,   124,   132,   144,   151,   158,   165,   172,   179,
-     186,   193,   200,   207,   214,   219,   224
+     186,   193,   200,   207,   214,   222,   227
 };
 #endif
 
@@ -1647,25 +1647,28 @@ yyreduce:
   case 24:
 #line 214 "provol-one_yacc.y"
           {
-        char *result = malloc(12);  // Ajuste este tamanho conforme necessário
-        sprintf(result, "%d", (yyvsp[0].numval));
+        int num_digits = snprintf(NULL, 0, "%d", (yyvsp[0].numval));//calcula a qtd de digitos
+        char *result = malloc(num_digits + 1);  // +1 para o caractere nulo de terminação
+        snprintf(result, num_digits + 1, "%d", (yyvsp[0].numval));//guarda a formatacao do num em string
+        (yyval.strval) = result;
+
         (yyval.strval) = result;
     }
-#line 1655 "provol-one_yacc.tab.c"
+#line 1658 "provol-one_yacc.tab.c"
     break;
 
   case 25:
-#line 219 "provol-one_yacc.y"
+#line 222 "provol-one_yacc.y"
          {
         char *result = malloc(strlen((yyvsp[0].strval)) + 1);
         strcpy(result, (yyvsp[0].strval));
         (yyval.strval) = result;
     }
-#line 1665 "provol-one_yacc.tab.c"
+#line 1668 "provol-one_yacc.tab.c"
     break;
 
   case 26:
-#line 224 "provol-one_yacc.y"
+#line 227 "provol-one_yacc.y"
                                  {
         char *result = malloc(strlen((yyvsp[-2].strval)) + strlen((yyvsp[-1].strval)) + 2);
         strcpy(result, "(");
@@ -1673,11 +1676,11 @@ yyreduce:
         strcat(result, ")");
         (yyval.strval) = result;
     }
-#line 1677 "provol-one_yacc.tab.c"
+#line 1680 "provol-one_yacc.tab.c"
     break;
 
 
-#line 1681 "provol-one_yacc.tab.c"
+#line 1684 "provol-one_yacc.tab.c"
 
       default: break;
     }
@@ -1909,7 +1912,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 233 "provol-one_yacc.y"
+#line 236 "provol-one_yacc.y"
 
 
 void yyerror(const char *s) {
