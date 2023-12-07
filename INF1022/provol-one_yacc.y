@@ -216,8 +216,6 @@ exp : exp MAIS exp {
         char *result = malloc(num_digits + 1);  // +1 para o caractere nulo de terminação
         snprintf(result, num_digits + 1, "%d", $1);//guarda a formatacao do num em string
         $$ = result;
-
-        $$ = result;
     }
     | ID {
         char *result = malloc(strlen($1) + 1);
