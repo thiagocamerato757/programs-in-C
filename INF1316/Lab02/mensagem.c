@@ -10,7 +10,7 @@
 #define SHM_KEY 8752
 #define SHM_SIZE 1024
 
-int main() {
+int main(void) {
     int shm_id;
     char *shm_ptr;
     int pid;
@@ -34,23 +34,25 @@ int main() {
     // Criar um processo filho
     pid = fork();
     if (pid < 0) {
-        puts ("Erro na criação do novo processo");
-        exit (-2);
+        puts("Erro na criação do novo processo");
+        exit(-2);
     } else if (pid == 0) { // Processo filho (cliente)
-        // Exibir a mensagem do dia
-        printf("Mensagem do dia: %s\n", shm_ptr);
-        exit(3); // Encerrar o processo filho
+        // Executar o cliente
+        char *args[] = {"cliente", NULL};
+        execv(args[0], args);
+        // Se execv retornar, ocorreu um erro
+        perror("Erro ao executar cliente");
+        exit(-1);
     } else { // Processo pai
         // Esperar pelo processo filho
         waitpid(pid, &status, 0);
-        if(!WIFEXITED(status)){
-            printf("child process failed\n");
+        if (!WIFEXITED(status)) {
+            printf("O processo filho falhou\n");
         }
         // Desanexar a memória compartilhada do espaço de endereço do processo
-        shmdt(shm_ptr);        
+        shmdt(shm_ptr);
         // Remover a memória compartilhada
         shmctl(shm_id, IPC_RMID, 0);
-
     }
 
     return 0;
