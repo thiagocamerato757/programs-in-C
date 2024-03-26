@@ -28,12 +28,12 @@ int main(void) {
         exit(-2);
     } else if (pid == 0) {
         // Processo filho P1
-        char *args[] = {"filho", "1", NULL, NULL};
+        char *args1[] = {"filho", "1", NULL, NULL};
         char shm_1_arg[20];
         sprintf(shm_1_arg, "%d", shm); // Converte shm_1 para string
-        args[2] = malloc(strlen(shm_1_arg) + 1); // Aloca memória para o argumento
-        strcpy(args[2], shm_1_arg); // Copia o valor de shm_1_arg para o argumento
-        execv(args[0], args);
+        args1[2] = malloc(strlen(shm_1_arg) + 1); // Aloca memória para o argumento
+        strcpy(args1[2], shm_1_arg); // Copia o valor de shm_1_arg para o argumento
+        execv(args1[0], args1);
         puts("Falha ao executar o processo filho P1");
         exit(1);
     }
@@ -43,12 +43,12 @@ int main(void) {
         exit(-2);
     } else if (pid == 0) {
         // Processo filho P2
-        char *args[] = {"filho", "2", NULL, NULL};
+        char *args2[] = {"filho", "2", NULL, NULL};
         char shm_2_arg[20];
-        sprintf(shm_2_arg, "%d", (shm+2)); // Converte shm_2 para string
-        args[2] = malloc(strlen(shm_2_arg) + 1); // Aloca memória para o argumento
-        strcpy(args[2], shm_2_arg); // Copia o valor de shm_2_arg para o argumento
-        execv(args[0], args);
+        sprintf(shm_2_arg, "%d", shm); // Converte shm_2 para string
+        args2[2] = malloc(strlen(shm_2_arg) + 1); // Aloca memória para o argumento
+        strcpy(args2[2], shm_2_arg); // Copia o valor de shm_2_arg para o argumento
+        execv(args2[0], args2);
         puts("Falha ao executar o processo filho P2");
         exit(1);
     }
@@ -64,7 +64,9 @@ int main(void) {
                     // Calcula o produto dos valores gerados por P1 e P2
                     int produto = mem_ptr[0] * mem_ptr[2];
                     printf("Produto dos valores gerados por P1 e P2: %d\n", produto);
+                    printf("%d %d\n",mem_ptr[1],mem_ptr[3]);
                     break;
+                    
                 } else {
                     seq1 = mem_ptr[1];
                     seq2 = mem_ptr[3];
