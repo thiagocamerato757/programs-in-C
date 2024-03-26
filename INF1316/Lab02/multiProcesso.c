@@ -12,7 +12,7 @@
 
 int main(void) {
     int shm, *mem_ptr, pid, status;
-    int seq1 = -1, seq2 = -1;
+    int seq1 = 0, seq2 = 0;
     
     // aloca a memória compartilhada
     shm = shmget(IPC_PRIVATE, (sizeof(int) * 4), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
@@ -60,24 +60,25 @@ int main(void) {
         if (WIFEXITED(status)) {
             if (WEXITSTATUS(status) == 0) {
                 printf("Um processo filho terminou.\n");
-                if (seq1 != mem_ptr[1] && seq2 != mem_ptr[3]) {
+                if ((seq1 == mem_ptr[1] && seq2 == mem_ptr[3])&&(seq1 != 0 && seq2 != 0)){
                     // Calcula o produto dos valores gerados por P1 e P2
                     int produto = mem_ptr[0] * mem_ptr[2];
                     printf("Produto dos valores gerados por P1 e P2: %d\n", produto);
-                    printf("%d %d\n",mem_ptr[1],mem_ptr[3]);
                     break;
                     
                 } else {
                     seq1 = mem_ptr[1];
+                    printf("seq1 %d\n", seq1);
                     seq2 = mem_ptr[3];
+                    printf("seq2 %d\n", seq2);
                 }
             } else {
                 printf("Um dos processos filho falhou.\n");
                 exit(1);
             }
+            printf("esperando\n");
+            sleep(1);
         }
-        printf("Aguardando novos valores...\n");
-        sleep(1); // Espera 1 segundo antes de verificar novamente
     }
 
     // libera a memória compartilhada do processo
