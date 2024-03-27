@@ -68,9 +68,7 @@ int main(void) {
                     
                 } else {
                     seq1 = mem_ptr[1];
-                    printf("seq1 %d\n", seq1);
                     seq2 = mem_ptr[3];
-                    printf("seq2 %d\n", seq2);
                 }
             } else {
                 printf("Um dos processos filho falhou.\n");
