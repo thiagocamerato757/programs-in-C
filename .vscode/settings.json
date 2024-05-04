@@ -7,6 +7,8 @@
         "stdlib.h": "c",
         "arq_convertor.h": "c",
         "converte.h": "c",
-        "trabalho4_aux.h": "c"
-    }
+        "trabalho4_aux.h": "c",
+        "interpretador.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
