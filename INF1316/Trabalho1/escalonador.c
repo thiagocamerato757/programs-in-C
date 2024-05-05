@@ -50,7 +50,7 @@ void print_program_list(ProgramNode *head) {
     }
 }
 
-void recebe_info(ProgramNode **real_time_queue, ProgramNode **priority_queues, ProgramNode **round_robin_queue, int pipe_fd) {
+void recebe_info(ProgramNode **real_time_queue, ProgramNode *priority_queues[], ProgramNode **round_robin_queue, int pipe_fd) {
     printf("Recebendo informações...\n\n");
     program program;
     while (read(pipe_fd, &program, sizeof(program)) > 0) {
@@ -74,11 +74,8 @@ void recebe_info(ProgramNode **real_time_queue, ProgramNode **priority_queues, P
 int main(void) {
     program program;
     ProgramNode *real_time_queue = NULL; 
-    ProgramNode *priority_queues[8]; 
+    ProgramNode *priority_queues[8] = {NULL}; 
     ProgramNode *round_robin_queue = NULL; 
-    for (int i = 0; i < 8; i++) {
-        priority_queues[i] = NULL;
-    }
 
     int pipe_fd = 0; // Use o descritor de arquivo correto aqui
 
@@ -99,6 +96,39 @@ int main(void) {
         free_program_list(priority_queues[i]);
     }
     free_program_list(round_robin_queue);
+
+    while(1){
+        if (real_time_queue != NULL) {
+            exec_program(real_time_queue->prog);
+            ProgramNode *temp = real_time_queue;
+            real_time_queue = real_time_queue->next;
+            free(temp);
+        }else{
+            if(priority_queues[0] != NULL){
+
+            }else if(priority_queues[1] != NULL && priority_queues[0] == NULL){
+
+            }else if(priority_queues[2] != NULL && (priority_queues[0] == NULL && priority_queues[1] == NULL)){
+
+            }else if(priority_queues[3] != NULL && (priority_queues[0] == NULL && priority_queues[1] == NULL && priority_queues[2] == NULL)){
+
+            }else if(priority_queues[4] != NULL && (priority_queues[0] == NULL && priority_queues[1] == NULL && priority_queues[2] == NULL && priority_queues[3] == NULL)){
+
+            }else if(priority_queues[5] != NULL && (priority_queues[0] == NULL && priority_queues[1] == NULL && priority_queues[2] == NULL && priority_queues[3] == NULL && priority_queues[4] == NULL)){
+
+            }else if(priority_queues[6] != NULL && (priority_queues[0] == NULL && priority_queues[1] == NULL && priority_queues[2] == NULL && priority_queues[3] == NULL && priority_queues[4] == NULL && priority_queues[5] == NULL)){
+
+            }else if(priority_queues[7] != NULL && (priority_queues[0] == NULL && priority_queues[1] == NULL && priority_queues[2] == NULL && priority_queues[3] == NULL && priority_queues[4] == NULL && priority_queues[5] == NULL && priority_queues[6] == NULL)){
+
+            }else{
+                if(round_robin_queue != NULL){
+
+                }
+            }
+        }
+
+        
+    }
 
     return 0;
 }
