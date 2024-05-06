@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <time.h>
 #include "interpretador.h"
 
 typedef struct ProgramNode {
@@ -50,6 +51,24 @@ void print_program_list(ProgramNode *head) {
     }
 }
 
+int check_real_time_conflict(ProgramNode *queue, program new_program) {
+    while (queue != NULL) {
+        if (new_program.initial_time >= queue->prog.initial_time &&
+            new_program.initial_time < queue->prog.initial_time + queue->prog.duration) {
+            printf("Conflito de escalonamento em tempo real: Novo programa %s com I=%d e D=%d entra em conflito com %s\n",
+                   new_program.name, new_program.initial_time, new_program.duration, queue->prog.name);
+            return 1;
+        } else if (new_program.initial_time + new_program.duration > queue->prog.initial_time &&
+                   new_program.initial_time + new_program.duration <= queue->prog.initial_time + queue->prog.duration) {
+            printf("Conflito de escalonamento em tempo real: Novo programa %s com I=%d e D=%d entra em conflito com %s\n",
+                   new_program.name, new_program.initial_time, new_program.duration, queue->prog.name);
+            return 1;
+        }
+        queue = queue->next;
+    }
+    return 0;
+}
+
 void recebe_info(ProgramNode **real_time_queue, ProgramNode *priority_queues[], ProgramNode **round_robin_queue, int pipe_fd) {
     printf("Recebendo informações...\n\n");
     program program;
@@ -62,7 +81,9 @@ void recebe_info(ProgramNode **real_time_queue, ProgramNode *priority_queues[], 
         } else if (program.type == 'T') {
             printf("Instante Inicial: %d\n", program.initial_time);
             printf("Duração: %d\n", program.duration);
-            insert_program(real_time_queue, program);
+            if (!check_real_time_conflict(*real_time_queue, program)) {
+                insert_program(real_time_queue, program);
+            }
         } else {
             insert_program(round_robin_queue, program);
         }
@@ -70,6 +91,37 @@ void recebe_info(ProgramNode **real_time_queue, ProgramNode *priority_queues[], 
     }
 }
 
+void exec_program(ProgramNode **program_node) {
+    program prog = (*program_node)->prog;
+    printf("Executando programa: %s\n", prog.name);
+    pid_t pid = fork();
+    if (pid == -1) {
+        perror("Erro ao criar processo filho");
+        exit(EXIT_FAILURE);
+    } else if (pid == 0) {
+        if (prog.type == 'P') {
+            for (int i = 0; i < 6; i++) {
+                printf("Processo PRIO %d executando\n", getpid());
+                sleep(0.5);
+            }
+            exit(EXIT_SUCCESS);
+        } else if (prog.type == 'T') {
+            while (1) {
+                time_t current_time = time(NULL);
+                struct tm *local_time = localtime(&current_time);
+                if (local_time->tm_sec == prog.initial_time) {
+                    printf("Tempo Real: Executando programa %s\n", prog.name);
+                    sleep(prog.duration);
+                }
+            }
+        } else if (prog.type == 'R') {
+            while (1) {
+                printf("Round-Robin: Executando programa %s\n", prog.name);
+                sleep(0.5);
+            }
+        }
+    }
+}
 
 int main(void) {
     program program;
@@ -90,45 +142,34 @@ int main(void) {
     }
     printf("Programas Round Robin:\n");
     print_program_list(round_robin_queue);
+    while(1){
+        // Executar programas de cada tipo
+        if (real_time_queue != NULL) {
+            exec_program(&real_time_queue);
+        }else{
+            for (int i = 0; i < 8; i++) {
+                if(i == 0){
+                    if (priority_queues[0] != NULL){
+                        exec_program(&priority_queues[0]);
+                    }
+                }else{
+                    if (priority_queues[i] != NULL && priority_queues[i-1]==NULL) {
+                        exec_program(&priority_queues[i]);
+                    }
+                }
+            }
+            if (round_robin_queue != NULL) {
+                exec_program(&round_robin_queue);
+            }
+        }
+    }
 
+    // Liberar memória das listas de programas
     free_program_list(real_time_queue);
     for (int i = 0; i < 8; i++) {
         free_program_list(priority_queues[i]);
     }
     free_program_list(round_robin_queue);
-
-    while(1){
-        if (real_time_queue != NULL) {
-            exec_program(real_time_queue->prog);
-            ProgramNode *temp = real_time_queue;
-            real_time_queue = real_time_queue->next;
-            free(temp);
-        }else{
-            if(priority_queues[0] != NULL){
-
-            }else if(priority_queues[1] != NULL && priority_queues[0] == NULL){
-
-            }else if(priority_queues[2] != NULL && (priority_queues[0] == NULL && priority_queues[1] == NULL)){
-
-            }else if(priority_queues[3] != NULL && (priority_queues[0] == NULL && priority_queues[1] == NULL && priority_queues[2] == NULL)){
-
-            }else if(priority_queues[4] != NULL && (priority_queues[0] == NULL && priority_queues[1] == NULL && priority_queues[2] == NULL && priority_queues[3] == NULL)){
-
-            }else if(priority_queues[5] != NULL && (priority_queues[0] == NULL && priority_queues[1] == NULL && priority_queues[2] == NULL && priority_queues[3] == NULL && priority_queues[4] == NULL)){
-
-            }else if(priority_queues[6] != NULL && (priority_queues[0] == NULL && priority_queues[1] == NULL && priority_queues[2] == NULL && priority_queues[3] == NULL && priority_queues[4] == NULL && priority_queues[5] == NULL)){
-
-            }else if(priority_queues[7] != NULL && (priority_queues[0] == NULL && priority_queues[1] == NULL && priority_queues[2] == NULL && priority_queues[3] == NULL && priority_queues[4] == NULL && priority_queues[5] == NULL && priority_queues[6] == NULL)){
-
-            }else{
-                if(round_robin_queue != NULL){
-
-                }
-            }
-        }
-
-        
-    }
 
     return 0;
 }
