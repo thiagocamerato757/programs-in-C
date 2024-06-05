@@ -74,7 +74,11 @@ void signal_handler(int signum) {
         // Comparar as prioridades globais do programa atual e do próximo programa
         if (next_program != NULL && next_program->globalPriority < current_program_node->globalPriority) {
             // Se o próximo programa tiver prioridade global mais alta, enviar um sinal SIGUSR1 para preempção
+<<<<<<< HEAD
             kill(getpid(), SIGUSR1);
+=======
+            kill(getpid(), SIGSTOP);
+>>>>>>> 49f218c (updated in 05/06/2024)
         }
     }
 }
@@ -117,7 +121,15 @@ void exec_program(ProgramNode **program_node) {
 void recebe_info(ProgramNode **real_time_queue, ProgramNode *priority_queues[], ProgramNode **round_robin_queue, int pipe_fd) {
     printf("Recebendo informações...\n\n");
     program program;
+<<<<<<< HEAD
     while (read(pipe_fd, &program, sizeof(program)) > 0) {
+=======
+    time_t local;
+    struct tm *secs;
+    while (read(pipe_fd, &program, sizeof(program)) > 0) {
+        time(&local);
+        secs = localtime(&local);
+>>>>>>> 49f218c (updated in 05/06/2024)
         printf("Programa: %s\n", program.name);
         printf("Tipo: %c\n", program.type);
         if (program.type == 'P') {
@@ -130,6 +142,10 @@ void recebe_info(ProgramNode **real_time_queue, ProgramNode *priority_queues[], 
         } else {
             insert_program(round_robin_queue, program, 3); // Prioridade 3 para programas round-robin
         }
+<<<<<<< HEAD
+=======
+        printf("tempo: %d",secs->tm_sec);
+>>>>>>> 49f218c (updated in 05/06/2024)
         printf("\n");
     }
 }
