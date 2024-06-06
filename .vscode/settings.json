@@ -9,7 +9,9 @@
         "converte.h": "c",
         "trabalho4_aux.h": "c",
         "interpretador.h": "c",
-        "stat.h": "c"
+        "stat.h": "c",
+        "string.h": "c",
+        "unistd.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

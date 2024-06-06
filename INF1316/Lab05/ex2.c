@@ -45,10 +45,10 @@ int main(void){
   fifo = open(FIFO, OPENMODE2);
   char buffer[MSG_SIZE];
   long int n = 0;
-  while(n = read(fifo, buffer, MSG_SIZE) > 0){
-    buffer[MSG_SIZE] = '\0';
-    printf("%s\n", buffer);
-  }
+  n = read(fifo, buffer, MSG_SIZE);
+  buffer[n] = '\0';
+  printf("%s\n", buffer);
+
   close(fifo);
   return 0;
 }
