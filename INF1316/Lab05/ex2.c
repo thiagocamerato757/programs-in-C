@@ -37,7 +37,7 @@ int main(void){
     write(fifo, msg2, strlen(msg2));
     close(fifo);
     exit(EXIT_SUCCESS);
-    
+
   }
   waitpid(pid1, NULL, 0);
   waitpid(pid2, NULL, 0);
